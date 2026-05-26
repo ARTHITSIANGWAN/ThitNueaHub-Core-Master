@@ -1,0 +1,12 @@
+TNH_PROJECT_SKELETON/
+├── cmd/
+│   └── main.go              // Engine มาตรฐาน
+├── docs/
+│   ├── SYNC_POLICY.md       // กฎการเชื่อมต่อกับ Hub
+│   └── DNA_ARCHIVE.md       // รายละเอียดโครงสร้าง DNA
+├── templates/
+│   ├── Context.ml           // Identity template
+│   ├── FiveTwo.ml           // Governance template
+│   └── Chronicle.ml         // Memory template
+└── scripts/
+    └── init.sh              // สคริปต์รันครั้งแรก เพื่อ Auto-setup
