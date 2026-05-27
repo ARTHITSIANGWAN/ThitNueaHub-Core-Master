@@ -1,6 +1,9 @@
-name = "tnh-ai-project-01-worker"
+# --- TNH_AI_MASTER_TEMPLATE: WRANGLER CONFIG ---
+# โปรดเปลี่ยนค่า name และ PROJECT_ID ให้ตรงกับชื่อโปรเจกต์ของบอสเมื่อนำไปใช้จริง
+
+name = "tnh-ai-YOUR_PROJECT_NAME-worker"
 main = "index.js"
 compatibility_date = "2026-05-27"
 
 [vars]
-PROJECT_ID = "TNH_AI_PROJECT_01"
+PROJECT_ID = "YOUR_PROJECT_ID_HERE"
