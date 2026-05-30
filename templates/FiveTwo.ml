@@ -1,12 +1,12 @@
 (* [project] tnh_ai_master_template *)
-(* [purpose] dna_governance: 5s rules engine definition *)
+(* [purpose] dna_governance: strict 5s edge constraints *)
 
 type rule_5s = {
-  seiri    : bool; (* เคลียร์ขยะคำฉีกขาด *)
-  seiton   : bool; (* จัดท่อเรียงแถวตรง *)
-  seiso    : bool; (* ฟลัชหน่วยความจำแรม *)
-  seiketsu : bool; (* รักษาสิทธิ์สเตลธ์ *)
-  shitsuke : bool; (* หมวกกันน็อคดักจับบั๊ก *)
+  seiri    : bool;
+  seiton   : bool;
+  seiso    : bool;
+  seiketsu : bool;
+  shitsuke : bool;
 }
 
 let active_governance = {
