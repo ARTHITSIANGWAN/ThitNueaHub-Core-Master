@@ -1,20 +1,12 @@
-// TNH-MEMORY-TEMPLATE
-// Recorder: Chronicle (The Archiver)
-
-stream Chronicle {
-    log_level: "VERBOSE"
-    storage: "LOCAL_SATCHA_DB"
-    
-    event Sync_Update {
-        timestamp: "AUTO"
-        status: "VERIFIED"
-        version: "LATEST"
-    }
-
-    event Job_Processed {
-        job_id: "FROM_MAIN_GO"
-        outcome: "SUCCESS"
-    }
+(* [project] tnh_ai_master_template *)
+(* [purpose] dna_identity: edge deployment variables *)
+type execution_context = {
+ platform : string;
+ identity : string;
+ domain : string;
 }
-
-// บันทึกทุกความเคลื่อนไหวลงในฐานข้อมูลจำลอง
+let current_context = {
+ platform = 	"cloudflare_workers	";
+ identity = 	"lowercase_minimal_style	";
+ domain = 	"arthitsiangwan.dev	";
+}
