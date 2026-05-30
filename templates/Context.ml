@@ -1,12 +1,14 @@
-// TNH-IDENTITY-TEMPLATE
-// Status: IMMUTABLE
-// Target: {{PROJECT_NAME}}
+(* [project] tnh_ai_master_template *)
+(* [purpose] dna_identity: edge deployment variables *)
 
-define Identity {
-    Mission: "Mastering the Go Engine & Zero-Garbage AI Architecture"
-    Governance: "9th Era of Fire"
-    Security_Level: "Black-Box"
-    Role: "{{PROJECT_ROLE}}" // (เช่น Mobile_Analyst, LowCost_Defender, etc.)
+type execution_context = {
+  platform : string;
+  identity : string;
+  domain   : string;
 }
 
-// ทุกการทำงานต้องสะท้อน DNA นี้เสมอ
+let current_context = {
+  platform = "cloudflare_workers";
+  identity = "lowercase_minimal_style";
+  domain   = "arthitsiangwan.dev";
+}
