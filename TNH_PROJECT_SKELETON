@@ -10,3 +10,11 @@ TNH_PROJECT_SKELETON/
 │   └── Chronicle.ml         // Memory template
 └── scripts/
     └── init.sh              // สคริปต์รันครั้งแรก เพื่อ Auto-setup
+tnh-fortress-android/
+├── cmd/
+│   └── main.go              // วาทยากรหลักคุมเครื่องยนต์ สั่งงาน 11 ขุนพลพร้อมกัน
+├── configs/
+│   └── skill.ml             // คัมภีร์มาร์คสเปกทักษะและพิมพ์เขียวองค์กร
+└── internal/
+    └── truth/
+        └── shared_truth.db  // "ถังสัจจะกลางถนน" (SQLite) จุดนัดพบข้อมูลหนึ่งเดียวของ 11 ขุนพล
