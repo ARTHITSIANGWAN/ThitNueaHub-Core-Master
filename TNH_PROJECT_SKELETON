@@ -1,20 +1,32 @@
-TNH_PROJECT_SKELETON/
+TNH_AI_Master_Template/
+├── .github/workflows/
+│   └── go.yml               // ระบบ CI ตรวจสอบ Formatting และ Auditing อัตโนมัติ
 ├── cmd/
-│   └── main.go              // Engine มาตรฐาน
-├── docs/
-│   ├── SYNC_POLICY.md       // กฎการเชื่อมต่อกับ Hub
-│   └── DNA_ARCHIVE.md       // รายละเอียดโครงสร้าง DNA
-├── templates/
-│   ├── Context.ml           // Identity template
-│   ├── FiveTwo.ml           // Governance template
-│   └── Chronicle.ml         // Memory template
-└── scripts/
-    └── init.sh              // สคริปต์รันครั้งแรก เพื่อ Auto-setup
+│   └── main.go              // เครื่องยนต์หลัก (Pure Go Engine) รัน Logic พื้นฐาน
+├── data/                    // คลังข้อมูลออฟไลน์ในเครื่อง (Local Storage Area)
+│   ├── content_stock/       // คลังเก็บคอนเทนต์ดิบล่วงหน้า (Content Stocking)[span_0](start_span)[span_0](end_span)
+│   └── reports/             // ถังเก็บไฟล์รายงานผลภาษี/การทำงานออฟไลน์
+├── docs/                    // พิมพ์เขียวกฎเกณฑ์และอธิปไตยทางข้อมูล
+│   ├── DNA_ARCHIVE.md       // คลังเก็บรายละเอียดโครงสร้าง DNA แม่แบบ
+│   ├── SECURITY.md          // นโยบายควบคุมความปลอดภัยและสิทธิ์
+│   └── SYNC_POLICY.md       // กฎสิทธิ์การเชื่อมต่อสะกิดข้อมูลกลับไปยัง Hub
+├── scripts/                 // ศูนย์รวมชุดคำสั่งรันระบบแบบอัตโนมัติ
+│   ├── init.sh              // สคริปต์ลั่นไกครั้งแรกเพื่อ Auto-setup โครงสร้างระบบ
+│   └── orchestrate.sh       // ตัวจัดคิวและจังหวะการยิงข้อมูล (Scheduler Helper)
+├── templates/               // ไฟล์ Identity & Memory ในการหล่อหลอม AI Agent
+│   ├── Chronicle.ml         // ตัวบันทึกประวัติศาสตร์ (Memory Template)
+│   ├── Context.ml           // ตัวระบุสิทธิ์และตัวตน (Identity Template)
+│   └── FiveTwo.ml           // ตัวควบคุมธรรมาภิบาลและการรันข้ามเลข (Governance)
+├── workers/                 // ท่อเชื่อมต่อระบบย่อยสำหรับ Cloudflare Workers
+├── .env.example             // ไฟล์ตัวอย่างสำหรับตั้งค่า Environment Variables
+├── TNH_MANIFESTO.md         // ปณิธานความโปร่งใสและเป้าหมายเพื่อ SMEs[span_1](start_span)[span_1](end_span)
+└── README.md                // หน้าแรกอธิบายภาพรวมสถาปัตยกรรมระดับ Edge Intelligence
+
 tnh-fortress-android/
 ├── cmd/
-│   └── main.go              // วาทยากรหลักคุมเครื่องยนต์ สั่งงาน 11 ขุนพลพร้อมกัน
+│   └── main.go              // วาทยากรหลัก (Conductor): คุมเครื่องยนต์และสั่งการ 11 ขุนพลพร้อมกัน
 ├── configs/
-│   └── skill.ml             // คัมภีร์มาร์คสเปกทักษะและพิมพ์เขียวองค์กร
+│   └── skill.ml             // คัมภีร์มาร์คสเปกทักษะและพิมพ์เขียวองค์กรของลูกค้าแต่ละราย
 └── internal/
     └── truth/
-        └── shared_truth.db  // "ถังสัจจะกลางถนน" (SQLite) จุดนัดพบข้อมูลหนึ่งเดียวของ 11 ขุนพล
+        └── shared_truth.db  // "ถังสัจจะกลางถนน" (SQLite): จุดนัดพบข้อมูลออฟไลน์หนึ่งเดียวของ 11 ขุนพล[span_3](start_span)[span_3](end_span)
