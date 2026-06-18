@@ -21,12 +21,3 @@ Tnh_ai_Master_Template/
 ├── .env.example             // ไฟล์ตัวอย่างสำหรับตั้งค่า Environment Variables
 ├── TNH_MANIFESTO.md         // ปณิธานความโปร่งใสและเป้าหมายเพื่อ SMEs[span_1](start_span)[span_1](end_span)
 └── README.md                // หน้าแรกอธิบายภาพรวมสถาปัตยกรรมระดับ Edge Intelligence
-
-tnh_ai_fortress_android/
-├── fortress_android/
-│   └── main.go              // วาทยากรหลัก (Conductor): คุมเครื่องยนต์และสั่งการ 11 ขุนพลพร้อมกัน
-├── configs/
-│   └── skill.ml             // คัมภีร์มาร์คสเปกทักษะและพิมพ์เขียวองค์กรของลูกค้าแต่ละราย
-└── internal/
-    └── truth/
-        └── shared_truth.db  // "ถังสัจจะกลางถนน" (SQLite): จุดนัดพบข้อมูลออฟไลน์หนึ่งเดียวของ 11 ขุนพล[span_3](start_span)[span_3](end_span)
