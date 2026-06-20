@@ -1,78 +1,134 @@
 package main
 
 import (
+	"bytes"
 	"crypto/hmac"
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"github.com/syumai/workers" // สับสายเข้าท่อ edge engine ของ cloudflare workers แท้ 100%
+	"sync"
 )
 
-const secretKey = "thitnueahub_secret_token_v86"
+// Configuration Constants
+const (
+	Port        = ":2026"
+	QueueSize   = 128
+	WorkerCount = 4
+	SecretKey   = "THITNUEA_SECURE_KEY" // สำหรับ Sign ข้อมูลส่งขึ้น Edge
+)
 
-type job struct {
+type Job struct {
 	JobID  string `json:"job_id"`
-	Action string `json:"action"` 
+	Action string `json:"action"`
 	Topic  string `json:"topic"`
 	Ts     int64  `json:"ts"`
 	Ttl    int    `json:"ttl"`
-	Sig    string `json:"sig"`
+	Sig    string `json:"sig"` // Signature เพื่อตรวจสอบความถูกต้อง
 }
 
-// ตรวจสอบลายเซ็นดิจิทัลตามกฎเหล็กความปลอดภัยด่านแรก (Phase 1)
-func validateSignature(j job) bool {
-	message := fmt.Sprintf("%s|%s|%s", j.JobID, j.Action, j.Topic)
-	mac := hmac.New(sha256.New, []byte(secretKey))
-	mac.Write([]byte(message))
-	return j.Sig == hex.EncodeToString(mac.Sum(nil))
+var (
+	jobQueue = make(chan Job, QueueSize)
+	metrics  = struct {
+		sync.Mutex
+		Processed int
+	}{}
+)
+
+func main() {
+	// Initialize worker pool
+	for i := 0; i < WorkerCount; i++ {
+		go worker(i)
+	}
+
+	http.HandleFunc("/process", processHandler)
+	http.HandleFunc("/metrics", metricsHandler)
+
+	fmt.Printf("Fortress Engine Ready on %s\n", Port)
+	if err := http.ListenAndServe(Port, nil); err != nil {
+		panic(err)
+	}
+}
+
+// 🛡️ GATEKEEPER: ตรวจสอบสิทธิ์และ Topic
+func isAllowed(topic string) bool {
+	// Whitelist ตรวจสอบว่า Topic นี้อนุญาตให้ทำงานหรือไม่
+	allowedTopics := map[string]bool{"CONTENT": true, "SYSTEM": true}
+	return allowedTopics[topic]
+}
+
+// 🧠 PROCESSOR: เปลี่ยน Template ตาม DNA
+func applyTemplate(action, topic string) ([]byte, error) {
+	// Logic การเลือก Template (จำลองการอ่านไฟล์ .ml)
+	content := fmt.Sprintf("Template Applied: %s for %s", action, topic)
+	return []byte(content), nil
+}
+
+// 🌉 BRIDGE: ส่งข้อมูลขึ้น Edge อย่างปลอดภัย
+func pushToEdge(data []byte, originalSig string) error {
+	// ตรวจสอบ Signature ก่อนส่ง (กันข้อมูลปลอม)
+	h := hmac.New(sha256.New, []byte(SecretKey))
+	h.Write(data)
+	calculatedSig := hex.EncodeToString(h.Sum(nil))
+
+	if calculatedSig != originalSig {
+		return fmt.Errorf("SECURITY ALERT: Signature mismatch")
+	}
+
+	// ส่งขึ้น Edge (Cloudflare)
+	fmt.Printf("Bridge: Pushing data to Edge with Sig: %s\n", calculatedSig)
+	return nil
+}
+
+// worker processes jobs
+func worker(id int) {
+	for job := range jobQueue {
+		// 1. Gatekeeper Check
+		if !isAllowed(job.Topic) {
+			fmt.Printf("Worker %d: Rejected Topic %s\n", id, job.Topic)
+			continue
+		}
+
+		// 2. Process Template
+		payload, err := applyTemplate(job.Action, job.Topic)
+		if err != nil {
+			continue
+		}
+
+		// 3. Push to Bridge
+		err = pushToEdge(payload, job.Sig)
+		if err != nil {
+			fmt.Printf("Worker %d: Bridge Error: %v\n", id, err)
+			continue
+		}
+
+		metrics.Lock()
+		metrics.Processed++
+		metrics.Unlock()
+	}
 }
 
 func processHandler(w http.ResponseWriter, r *http.Request) {
-	// หมวกกันน็อคเหล็กกล้า ป้องกันการแครชที่ edge คืนสถานะคลีนเสมอป้องกันระบบลูปดับ
-	defer func() {
-		if err := recover(); err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			fmt.Fprintf(w, `{"status":"edge_panic_recovered"}`)
-		}
-	}()
-
 	if r.Method != http.MethodPost {
-		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
 		return
 	}
-
-	var j job
-	if err := json.NewDecoder(r.Body).Decode(&j); err != nil {
-		http.Error(w, "bad request", http.StatusBadRequest)
+	var job Job
+	if err := json.NewDecoder(r.Body).Decode(&job); err != nil {
+		http.Error(w, "Bad Request", http.StatusBadRequest)
 		return
 	}
-
-	// คัดกรองและกำจัดขยะทิ้งทันทีหากลายเซ็นโมฆะ
-	if !validateSignature(j) {
-		http.Error(w, "unauthorized_garbage_detected", http.StatusUnauthorized)
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusAccepted)
-
-	// L1 จ่ายงานกระจายสายตรงไป spoke ทันทีแบบไร้รอยหน่วงตามกฎข้อ 3 ของ manifesto
-	switch j.Action {
-	case "scrape":
-		fmt.Fprintf(w, `{"status":"dispatched","target":"services/scraper","job_id":"%s"}`, j.JobID)
-	case "schedule":
-		fmt.Fprintf(w, `{"status":"dispatched","target":"services/scheduler","job_id":"%s"}`, j.JobID)
-	case "agent_call":
-		fmt.Fprintf(w, `{"status":"dispatched","target":"my_agent/app","job_id":"%s"}`, j.JobID)
+	select {
+	case jobQueue <- job:
+		w.WriteHeader(http.StatusAccepted)
 	default:
-		fmt.Fprintf(w, `{"status":"dispatched","target":"general_spoke","job_id":"%s"}`, j.JobID)
+		http.Error(w, "Queue Full", http.StatusServiceUnavailable)
 	}
 }
 
-func main() {
-	// ลบพอร์ตประจำถิ่น :2026 และ listenandserve ทิ้งทั้งหมด เพื่อให้เป็น edge serverless สมบูรณ์แบบ
-	http.HandleFunc("/process", processHandler)
-	workers.Serve(nil)
+func metricsHandler(w http.ResponseWriter, r *http.Request) {
+	metrics.Lock()
+	defer metrics.Unlock()
+	fmt.Fprintf(w, "Processed: %d", metrics.Processed)
 }
