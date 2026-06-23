@@ -1,4 +1,4 @@
-MASTER_TEMPLATE/
+TNH_AI_Master_Template/
 ├── .github/workflows/
 │   └── go.yml               // ระบบ CI ตรวจสอบ Formatting และ Auditing อัตโนมัติ
 ├── cmd/
