@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🪐 **TNH AI MANIFESTO**  
+# 🪐 **TNH_AI_MASTER_TEMPLATE**  
 ### **THE MINI HEART PROTOCOL**
 
 > **"We don’t build AI to maximize profit.  
