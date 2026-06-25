@@ -1,4 +1,3 @@
-// src/core/poller.ts (TNH_STANDARD)
 import { StrictValidator } from './validator';
 
 async function runTNHLoop(env: Env) {
