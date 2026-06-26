@@ -1,46 +1,27 @@
-name: TNH_AI_SOOD_SOI_UNIFIER
-
+name: TNH_AI_SOOD_SOI_MASTER
 on:
-  workflow_dispatch:
+  workflow_dispatch: # สั่งรันมือได้ตลอดเวลาจาก Chrome Dev
+  push:
+    branches:
+      - master # ล็อกไว้ที่กิ่งหลักของเทมเพลต
 
 jobs:
   push_to_empire:
-    name: Sync Source Code to Core Repository
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout Source Repository
+      - name: 🛡️ Step 1: Checkout Source (5S Audit)
         uses: actions/checkout@v4
 
-      - name: Build Deployment Bundle Artifacts
-        run: |
-          mkdir -p deployment_bundle
-          rsync -av \
-            --exclude='.git' \
-            --exclude='.github' \
-            --exclude='node_modules' \
-            ./ deployment_bundle/
-
-      - name: Execute Remote Synchronization and Deployment
+      - name: ⏳ Step 2: เปิดสะพานล่องหน ดึงมหาจักรวรรดิมารวมศูนย์
         env:
-          GITHUB_PAT_TOKEN: ${{ secrets.GH_PAT_TOKEN }}
+          GH_TOKEN: ${{ secrets.GH_PAT_TOKEN }}
         run: |
           git config --global user.name "TNH-AI-JOD-L5"
           git config --global user.email "jod@tnh.ai"
           
-          # Clone target orchestrator repository
-          git clone "https://x-access-token:${GITHUB_PAT_TOKEN}@github.com/ARTHITSIANGWAN/TNH-AI-9th-Era-of-Fire-AI-Orchestra-Mastering-Go-Engine-" destination_repository
+          # ตัวอย่างโครงสร้างที่บอสทำ: สร้างโฟลเดอร์ปลายทางอัตโนมัติ
+          TARGET_DIR="destination"
+          mkdir -p $TARGET_DIR
           
-          # Establish deterministic source folder mapping
-          SOURCE_REPOSITORY_NAME=$(basename "$GITHUB_REPOSITORY")
-          TARGET_DEPLOYMENT_DIRECTORY="destination_repository/from_${SOURCE_REPOSITORY_NAME}"
-          
-          mkdir -p "$TARGET_DEPLOYMENT_DIRECTORY"
-          cp -rv deployment_bundle/* "$TARGET_DEPLOYMENT_DIRECTORY/"
-          
-          # Commit and push updates to remote infrastructure
-          cd destination_repository
-          git add .
-          git commit -m "Level 5 Automated Sync: Integrated payload from ${SOURCE_REPOSITORY_NAME} into orchestration pipeline." || echo "Deployment Status: No structural changes detected."
-          git push
+          echo "⚡ [Ignite]: เตรียมระบบซิงค์มหาจักรวรรดิ 20 โปรเจกต์..."
           
