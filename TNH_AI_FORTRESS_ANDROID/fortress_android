@@ -1,0 +1,11 @@
+fortress_android/
+├── cmd/                # Engine หลักสำหรับรันระบบ
+├── docs/               # เสาหลักที่ 1: คลังเอกสารระบบ & คู่มือ
+├── services/           # บริการสมองกล
+│   ├── scraper/        # เสาหลักที่ 2: ระบบคริปเปอร์
+│   └── scheduler/      # เสาหลักที่ 4: ระบบปฏิทิน/ตารางงาน
+├── data/               # คลังสมบัติ
+│   ├── reports/        # เสาหลักที่ 3: ไฟล์+รายงาน
+│   └── content_stock/  # เสาหลักที่ 5: สต็อกคอนเทนต์
+├── templates/          # DNA (Identity, Governance, Memory)
+└── scripts/            # เครื่องมือจัดการระบบ (init.sh, sync.sh)
