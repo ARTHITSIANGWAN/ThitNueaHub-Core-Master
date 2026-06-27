@@ -1,19 +1,48 @@
-// ตัวอย่างลอจิกใน workers/index.js (Cloudflare)
 export default {
-  async fetch(request, env) {
-    // อ่านค่าสวิตช์จาก Environment Variable (เปลี่ยนค่าได้จาก CI/CD หรือ Dashboard)
-    const activeBackend = env.ACTIVE_BACKEND; // ค่าอาจจะเป็น "CLOUDFLARE_ONLY", "GCP_CLOUD_RUN", หรือ "SPLIT"
+  async fetch(request, env, ctx) {
+    const url = new URL(request.url);
 
-    if (activeBackend === "GCP_CLOUD_RUN") {
-        // ถ้าเปิดสวิตช์ GCP ไว้ ให้โยน Request ไปหา Go MCP Server ที่ Google Cloud Run
-        const gcpUrl = "https://[YOUR-CLOUD-RUN-URL]/v1/mcp/ingress";
-        return fetch(gcpUrl, request);
+    // ==========================================
+    // 🎛️ 1. สวิตช์ควบคุม (Feature Toggle)
+    // ==========================================
+    // ดึงค่ามาจาก Environment Variable ใน Cloudflare
+    const useCloudRun = env.USE_CLOUD_RUN === "true";
+
+    // ==========================================
+    // 🔵 2. กรณีสวิตช์ "เปิด" (โยนงานหนักไป Google Cloud Run)
+    // ==========================================
+    if (useCloudRun && url.pathname === "/dispatch") {
+      const cloudRunUrl = env.CLOUD_RUN_URL; // เช่น https://fortress-xxx-as.a.run.app
+      
+      // คัดลอก Request เดิมทั้งหมด แล้วเปลี่ยนปลายทางไปที่ Cloud Run
+      const proxyRequest = new Request(`${cloudRunUrl}/dispatch`, {
+        method: request.method,
+        headers: request.headers,
+        body: request.body
+      });
+      
+      // โยนงานไปแล้วรอรับผลลัพธ์กลับมาส่งให้ User
+      return fetch(proxyRequest);
     }
 
-    // ถ้าปิด GCP อยู่ ให้ Cloudflare ตอบกลับเอง หรือใช้ฟังก์ชันสำรอง
-    return new Response(JSON.stringify({
-        status: "SUCCESS",
-        message: "Handled by Cloudflare Edge (GCP is currently sleeping)"
-    }), { headers: { "Content-Type": "application/json" } });
-  }
-}
+    // ==========================================
+    // 🟢 3. กรณีสวิตช์ "ปิด" (Cloudflare ตอบกลับเองทันที)
+    // ==========================================
+    // ใช้สำหรับรับแขกทั่วไป หรือตอนที่เราปิดเซิร์ฟเวอร์ Cloud Run เพื่อประหยัดเงิน
+    const edgeResponse = {
+      status: "success",
+      source: "Cloudflare Edge (Front-door)",
+      message: "🚀 ระบบศูนย์กลาง TNH ทำงานปกติ (โหมดประหยัดพลังงาน)",
+      timestamp: new Date().toISOString(),
+      path_requested: url.pathname
+    };
+
+    return new Response(JSON.stringify(edgeResponse, null, 2), {
+      status: 200,
+      headers: { 
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*" // ป้องกันปัญหา CORS
+      }
+    });
+  },
+};
