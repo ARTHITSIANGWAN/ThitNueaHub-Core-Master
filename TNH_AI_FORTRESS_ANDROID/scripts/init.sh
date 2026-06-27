@@ -1,7 +1,7 @@
 #!/bin/bash
-# TNH_AI_PROJECT_01 Setup Script
+# TNH_AI_FORTRESS_ANDROID Setup Script
 
-echo "🏰 กำลังสร้างฐานที่มั่น TNH_AI_PROJECT_01..."
+echo "TNH_AI_FORTRESS_ANDROID"
 
 # สร้างโครงสร้างหลัก
 mkdir -p cmd docs services/scraper services/scheduler data/reports data/content_stock templates scripts
