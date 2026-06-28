@@ -1,7 +1,3 @@
-// cmd/orchestra/main.go
-// TNH AI Orchestra - Main Entry Point (L1 Commander)
-// Pure Go, Clean, Minimalist, Zero-Garbage
-
 package main
 
 import (
