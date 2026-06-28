@@ -1,4 +1,4 @@
-TNH_AI_Master_Template/
+tnh_ai_master_template/
 ├── cmd/
 │   └── orchestra/
 │       └── main.go                 # ← เราจะเขียนตัวนี้
