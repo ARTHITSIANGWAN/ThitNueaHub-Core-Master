@@ -1,6 +1,0 @@
-name = "tnh-ai-project-01-worker"
-main = "index.js"
-compatibility_date = "2026-05-27"
-
-[vars]
-PROJECT_ID = "TNH_AI_PROJECT_01"
