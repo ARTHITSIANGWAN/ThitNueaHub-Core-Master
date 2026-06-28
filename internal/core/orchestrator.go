@@ -1,4 +1,3 @@
-// internal/core/orchestrator.go
 package core
 
 import (
