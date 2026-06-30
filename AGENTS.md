@@ -13,4 +13,7 @@
 ## 3. Zero-Garbage Review Protocol
 - Maximize technical precision. Avoid prose or repetitive conversational filler.
 - Ensure all Go structures under `./cmd/` and configuration flags map directly to active Cloudflare bindings without generating unused variables.
+<<<<<<< HEAD
 - 
+=======
+>>>>>>> d71136e (chore: ignore virtual environment)

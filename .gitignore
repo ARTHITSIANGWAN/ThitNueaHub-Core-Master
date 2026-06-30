@@ -38,3 +38,4 @@ dist.js
 .idea/
 *.sublime-project
 *.sublime-workspace
+tnh_env/
