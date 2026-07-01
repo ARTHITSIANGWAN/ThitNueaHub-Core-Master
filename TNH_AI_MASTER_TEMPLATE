@@ -1,0 +1,54 @@
+TNH_AI_MASTER_TEMPLATE/
+├── cmd/
+│   └── orchestra/                  # Entry point หลัก (L1 Commander)
+│       └── main.go
+│
+├── internal/                       # ← สำคัญที่สุด (ไม่ให้ import จากภายนอกได้)
+│   ├── core/                       # ระบบหลัก Orchestrator
+│   │   ├── commander.go            # L1 Commander
+│   │   ├── state.go                # LangGraph State Management
+│   │   ├── graph.go                # StateGraph Builder
+│   │   └── orchestrator.go
+│   │
+│   ├── guardians/                  # แยกแต่ละ Guardian (สำคัญมาก)
+│   │   ├── l2_scribe/
+│   │   │   └── scribe.go
+│   │   ├── l3_artist/
+│   │   ├── l4_analyst/
+│   │   ├── l5_auditor/
+│   │   ├── l6_merchant/
+│   │   ├── l7_oracle/
+│   │   ├── l8_guardian/
+│   │   ├── l9_sentinel/
+│   │   ├── l10_auditor/
+│   │   └── l11_balancer/
+│   │
+│   ├── debate/                     # Cross-Department Debate
+│   │   ├── debate.go
+│   │   └── consensus.go
+│   │
+│   ├── storage/                    # Database, Cache, Vector
+│   ├── config/                     # Configuration
+│   ├── utils/                      # Helper functions
+│   └── middleware/                 # Logging, Security, etc.
+│
+├── pkg/                            # Shared packages (import ได้จากภายนอก)
+│   └── shared/
+│       ├── types.go
+│       └── constants.go
+│
+├── templates/                      # Prompt templates, UI templates
+├── scripts/                        # Automation scripts
+├── deployments/
+│   ├── Dockerfile
+│   └── docker-compose.yml
+├── docs/
+├── .github/workflows/
+├── TNH_MANIFESTO.md
+├── README.md
+├── go.mod
+├── go.sum
+├── Makefile
+└── .env.example
+
+ผมว่าแบบนี้แยกคำสั่งชัดเจนกว่าไหม l1 ใช้คำสั่งตามที่ผมบอกและl2 ทำหน้าที่ของตัวเอง และยังเพิ่ม go start มา
