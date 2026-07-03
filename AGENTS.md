@@ -1,19 +1,19 @@
-# TNH_AI_Master_Template - Agent Rules
+# TNH_AI_Master_Template - Agent Rules (Refined V83)
 
-## 1. System Identity & Environment
-- **Project Scope:** ThitNueaHub Master AI Lab Infrastructure
-- **Active Version:** V83 (Core Target Platform)
-- **Host OS:** Android (via Termux Environment / arm64 architecture)
+## 1. System Identity
+- Scope: ThitNueaHub Master AI Lab
+- Version: V83 (Target: Cloudflare Workers)
+- Environment: Android/Termux (arm64)
 
-## 2. Infrastructure Guide & Constraints
-- **Deployment Protocol:** Do not use local `wrangler deploy` in Termux directly due to arm64/workerd binary restrictions.
-- **Sync Method:** Always run scripts under `./scripts/` (e.g., `deploy_tnh.sh`) or execute `git push` to let GitHub Webhooks trigger Cloudflare production deployment.
-- **Internal Guardians:** Reference directory `./internal/guardians/` for specific agent identities (e.g., Use `l2_scribe` for content management and supervisor alignment).
+## 2. Infrastructure Constraints
+- Deployment: Prohibit direct `wrangler deploy` via Termux.
+- Pipeline: Utilize `./scripts/deploy_tnh.sh` or `git push` (GitHub Action trigger).
+- Identity Management: Reference `./internal/guardians/` for role-based execution (e.g., `l2_scribe`).
 
-## 3. Zero-Garbage Review Protocol
-- Maximize technical precision. Avoid prose or repetitive conversational filler.
-- Ensure all Go structures under `./cmd/` and configuration flags map directly to active Cloudflare bindings without generating unused variables.
-<<<<<<< HEAD
-- 
-=======
->>>>>>> d71136e (chore: ignore virtual environment)
+## 3. Review Protocol (Zero-Garbage)
+- Technical Precision: Strictly omit conversational fillers.
+- Code Hygiene: 
+    - Validate `./cmd/` Go structures against Cloudflare bindings.
+    - Eliminate unused variables/imports.
+    - Enforce environment-specific configurations (non-hardcoded credentials).
+    - 
