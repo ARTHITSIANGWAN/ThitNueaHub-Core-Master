@@ -1,13 +1,19 @@
-# === ThitNueaHub Secret Key Parameters ===
-# รหัสลับสำหรับใช้เซ็นและถอดรหัส HMAC-SHA256 (ต้องตรงกับในโค้ด main.go)
-TNH_SECRET_KEY=thitnueahub_secret_token_v86
+name = "tnh-fortress"
+main = "workers/index.js" # หรือไฟล์ Go ที่คอมไพล์แล้ว
+compatibility_date = "2026-07-04"
 
-# === Cloudflare Edge Deployment Configurations ===
-# ค่าสำหรับใช้สั่ง Deploy ผ่าน wrangler deploy ไปยังบัญชี Cloudflare ของพี่
-CLOUDFLARE_ACCOUNT_ID=ใส่รหัสบัญชีCloudflareของพี่ตรงนี้
-CLOUDFLARE_API_TOKEN=ใส่รหัสตั๋วTokenของCloudflareตรงนี้
+# --- ท่อ D1 (ฐานข้อมูลความรู้) ---
+[[d1_databases]]
+binding = "DB"
+database_name = "tnh-knowledge"
+database_id = "..." # เจ้านายเติม ID ที่สร้างใน Dashboard
 
-# === Telemetry & Security Mode ===
-# เปิดระบบผู้พิทักษ์ (Guardians) และโหมด Tracing คุมกฎเหล็ก 5ส
-TNH_SECURITY_LEVEL=MAXIMUM
-TNH_TRACING_MODE=RECORD_UNTIL_FULL
+# --- ท่อ R2 (เก็บ Model .safetensors) ---
+[[r2_buckets]]
+binding = "MODEL_STORE"
+bucket_name = "tnh-models"
+
+# --- ท่อ Service Binding (เชื่อมบอท A2A) ---
+[[services]]
+binding = "KAEWTA_AGENT"
+service = "kaewta-service"
