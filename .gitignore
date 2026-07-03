@@ -39,3 +39,9 @@ dist.js
 *.sublime-project
 *.sublime-workspace
 tnh_env/
+node_modules/
+tnh_env/
+*.db
+node_modules/
+tnh_env/
+*.db
