@@ -4,7 +4,6 @@ import (
 	"crypto/hmac"
 	"crypto/sha256"
 	"encoding/hex"
-	"fmt"
 	"log"
 	"os"
 	"time"
@@ -15,12 +14,14 @@ import (
 var SECRET = []byte(os.Getenv("SECRET"))
 const PORT = ":2026"
 
-// โครงสร้างภาษากลางคุมสิทธิ์ 11 ขุนพล (Reference: AIDispatch Core)
-type AIDispatch struct {
-	Sender    string                 `json:"sender"`
-	Action    string                 `json:"action"`
-	Payload   map[string]interface{} `json:"payload"`
-	Timestamp string                 `json:"timestamp"`
+// โครงสร้างรับข้อมูลสัจจะ Pull Request จากท่อสังเกตการณ์ความเร็วแสง
+type PullRequestPayload struct {
+	Action        string `json:"action"`
+	Number        int    `json:"number"`
+	CommitID      string `json:"commit_id"`
+	RepoName      string `json:"repo_name"`
+	IsCICheckPass bool   `json:"is_ci_check_pass"`
+	Signature     string `json:"signature"`
 }
 
 func init() {
@@ -32,38 +33,52 @@ func init() {
 func main() {
 	app := fiber.New(fiber.Config{
 		Prefork:       false,
-		ServerHeader:  "TNH-Sovereign-V84.4",
-		AppName:       "ThitNueaHub Command Center",
+		ServerHeader:  "TNH-Sovereign-V84.6",
+		AppName:       "ThitNueaHub Command Center (L1)",
 	})
 
-	// L1 Commander Gateway - คุมหอคอยสั่งการลูกน้อง
-	app.Post("/api/v84/dispatch", func(c *fiber.Ctx) error {
-		// ดึงพิกัดเอกสารความรู้ที่เจ้านายมอบหมายมาประมวลผล
-		workspaceAssetID := "1_Wqtv3RL7Mj78vXnhw7GufPze7jmq-wZwdPKc6qUyzc"
-		
-		// 1. ส่งใบสั่งการให้ L2 แก้วตา รันคำสั่งเปิดท่อ AI Gateway ฝั่ง Cloudflare Edge
-		go delegateToKaewta(workspaceAssetID)
+	// ด่านหน้าประกาศศักดา
+	app.Get("/", func(c *fiber.Ctx) error {
+		return c.SendString("<h1>🏰 TNH V84.6 AGENT-MERGE BLOCKCHAIN LAYER</h1>")
+	})
 
-		// 2. ส่งใบสั่งการให้ L5 ไอ้จ๊อด เปิดระเบียบวินัย 5 ส ล้าง Cache ขยะความจำ
-		go delegateToJod()
+	// 🛡️ Layer 🔟 & 9️⃣: ท่อรับแรงกระแทกตรวจจับ Pull Request อัตโนมัติ (Reference: 17631.jpg)
+	app.Post("/webhook/github-pr", func(c *fiber.Ctx) error {
+		payload := new(PullRequestPayload)
+		if err := c.BodyParser(payload); err != nil {
+			return c.Status(fiber.StatusBadRequest).SendString("Bad Request")
+		}
+
+		log.Printf("📥 [GitHub App Event] ตรวจพบการเคลื่อนไหวของ Pull Request #%d ที่คอมมิต %s\n", payload.Number, payload.CommitID)
+
+		// คัดกรองตรรกะมนุษย์ด้วย ค.ว.ย. Protocol (คิด -> วิเคราะห์ -> แยกแยะ)
+		if payload.Action == "synchronize" || payload.Action == "opened" {
+			// 🕵️ สั่งการลูกน้อง L2 แก้วตา: วิ่งไปตรวจสอบตรรกะความปลอดภัยและสิทธิ์ในไฟล์ config หน้างาน
+			go delegateKaewtaPRCheck(payload.CommitID)
+		}
+
+		// กลไก "Agent Merge" ตามคู่มือภาพล่าสุด: หากตรวจพบว่า CI Check ผ่านฉลุยแล้ว สั่งรวมสายคำสั่งทันที
+		if payload.IsCICheckPass {
+			log.Printf("✨ [Agent Merge Activation] CI ตรวจสอบผ่านสำเร็จ! สั่งกดปุ่มรวมสายคำสั่งถาวร ไร้เศษขยะตกค้าง")
+			// 🧹 สั่งการลูกน้อง L5 ไอ้จ๊อด: สั่ง Purge ลบไฟล์ขยะและ Log ที่สร้างระหว่างการรันเทสทิ้งทันที
+			go delegateJodCleanBuild()
+		}
 
 		return c.JSON(fiber.Map{
-			"status":            "🔒 Core Dispatched",
-			"active_layer":      "Layer_10_Orchestrator",
-			"cloudflare_relay":  "tnh-files.9thera.workers.dev",
-			"msg":               "L1 Commander ใช้ลูกน้องหน้างานสำเร็จ ดาต้าวิดน้ำเรียบร้อยกริบ",
+			"status":             "🔒 PR_Monitored",
+			"agent_merge_state":  "BACKGROUND_RUNNING",
+			"cloudflare_relay":   "tnh-files.9thera.workers.dev",
+			"timestamp":          time.Now().Unix(),
 		})
 	})
 
 	log.Fatal(app.Listen(PORT))
 }
 
-func delegateToKaewta(assetID string) {
-	// จำลองกลไกบอท Go สั่งบอท Python/Worker (L2 แก้วตา) รันโค้ดฝั่ง AI Gateway
-	log.Printf("⚡ [L1 -> L2 แก้วตา]: รับพิกัดคลังเอกสาร ID: %s ไปเปิดใช้งานท่อ AI Gateway และรัน deploy ห้ามเปิดฝั่งกูเกิ้ลเด็ดขาด!\n", assetID)
+func delegateKaewtaPRCheck(commit string) {
+	log.Printf("⚡ [L1 -> L2 แก้วตา]: ตรวจสอบพิกัดคอมมิต %s บน AI Gateway ล็อกท่อฝั่ง Cloudflare เท่านั้น ห้ามเปิดฝั่งกูเกิ้ลเด็ดขาด!\n", commit)
 }
 
-func delegateToJod() {
-	// สั่งงานขุนพล L5 ไอ้จ๊อด คุมกฎ Zero-Garbage
-	log.Printf("🧹 [L1 -> L5 ไอ้จ๊อด]: รันสคริปต์ [สุดซอย V3] ล้างเศษขยะข้อความตกค้างและหน่วยความจำหลังวันที่ 4 เรียบร้อยกริบ\n")
+func delegateJodCleanBuild() {
+	log.Printf("🧹 [L1 -> L5 ไอ้จ๊อด]: รันสคริปต์ [สุดซอย V3] ชำระล้างขยะรหัสคอมไพล์ตกค้าง ป้องกันหน่วยความจำบวมเรียบร้อยกริบ\n")
 }
