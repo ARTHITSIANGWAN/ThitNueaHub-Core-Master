@@ -1,53 +1,69 @@
-export interface Env {
-	thitnueahub_core_db: D1Database;
-	TNH_KV: KVNamespace;
-	SECRET_KEY: string;
-}
+#:schema node_modules/wrangler/config-schema.json
+# 👑 มหาอาณาจักร TNH AI V84.5 TRINITY EMPIRE ENGINE 
+# [ARCH: ZERO-GARBAGEQUEUES] [SECURITY: FIXED BINDINGS] [PORT: 2026]
 
-export default {
-	async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
-		const url = new URL(request.url);
-		
-		// ตั้งค่าด่านกรองความปลอดภัยเบื้องต้น (CORS & Header Verification)
-		const responseHeaders = new Headers({
-			"Access-Control-Allow-Origin": "*",
-			"Content-Type": "application/json; charset=utf-8"
-		});
+name = "tnh-ai-v83-trinity-empire" # ล็อกชื่อแท้ตรงตามระบบ Cloudflare CI เรียบร้อย ไร้ Warning
+main = "src/index.ts"
+compatibility_date = "2026-07-04"
+compatibility_flags = [ "nodejs_compat" ]
 
-		// 1. ท่อตรวจสอบสิทธิ์ 11 ขุนพลจากตาราง tnh_agent_permissions ใน D1
-		if (url.pathname === "/api/v84/agent-check") {
-			const agentId = url.searchParams.get("agent_id") || "kaewta-agent";
-			try {
-				const { results } = await env.thitnueahub_core_db
-					.prepare("SELECT * FROM tnh_agent_permissions WHERE agent_id = ?")
-					.bind(agentId)
-					.all();
-				
-				return new Response(JSON.stringify({ status: "success", data: results }), { headers: responseHeaders });
-			} catch (err: any) {
-				return new Response(JSON.stringify({ status: "error", msg: err.message }), { headers: responseHeaders, status: 500 });
-			}
-		}
+# --- [WASM RULES CONFIGURATION] ---
+[[rules]]
+type = "CompiledWasm"
+globs = ["**/*.wasm"]
+fallthrough = true
 
-		// 2. ท่อเชื่อมต่อสตรีมดักจับข้อมูลภาพด่วนจุดชนวนระบบ AI สายตา
-		if (url.pathname === "/workflow/start") {
-			const key = url.searchParams.get("key") || "default.jpg";
-			// บันทึก State ลงในตู้เซฟความจำชั่วคราวเพื่อค้ำยันบริบทหลัก
-			await env.TNH_KV.put("last_triggered_flow", `Flow_Key_${key}_Time_${Date.now()}`);
-			
-			return new Response(JSON.stringify({
-				status: "🔥 Ignition",
-				pipeline: "Durable Cloudflare Workflows",
-				target_file: key,
-				msg: "ส่งสัญญาณคัดแยกขยะข้อมูลเสร็จสิ้น ขุนพล AI เริ่มวิ่งงานเบื้องหลัง"
-			}), { headers: responseHeaders });
-		}
+# ==========================================================
+# [RESOURCE BINDINGS - 11 GUARDIANS CORE RESOURCE]
+# ==========================================================
 
-		return new Response(JSON.stringify({
-			engine: "TNH-AI-V84.1-TRINITY",
-			status: "FRONT_LAYER_ACTIVE",
-			port_relay: "2026_CONNECTED"
-		}), { headers: responseHeaders });
-	}
-};
-        
+# 1. ฐานข้อมูล D1 สัจจะข้อมูล (ตารางสิทธิ์ 11 ขุนพลเสือขาว)
+[[d1_databases]]
+binding = "DB" 
+database_name = "thitnueahub-core-db"
+database_id = "6a8b4373-bf40-4b63-bb02-f612ecbe63b7"
+
+# 2. คลังจัดเก็บไฟล์ R2 Buckets สำหรับสตรีมมิ่งภาพและโมเดลสายตา (.safetensors)
+[[r2_buckets]]
+binding = "TNH_R2"
+bucket_name = "thitnueahub-assets"
+
+# 3. คลัง KV จัดเก็บไทม์สแตมป์ความจำถาวร 20 ปี ป้องกันบอทหลับ
+[[kv_namespaces]]
+binding = "TNH_KV"
+id = "2fa0a4773efa4a18b1534274d238dd76"
+
+# 4. โมเดล AI Edge ขอบสนาม (Edge Intelligence LlaVA)
+[ai]
+binding = "AI"
+
+# ==========================================================
+# [CLOUDFLARE QUEUES OMNI-CHANNEL PIPELINE]
+# ยึดท่อระบายข้อมูลฝั่งคลาวด์แฟลร์ tnh-files.9thera.workers.dev ปิดตายกูเกิ้ล
+# ==========================================================
+
+# ท่อส่งออกคำสั่ง (Producers) - สำหรับ L1 Commander สั่งการ หรือบอทลูกน้องยิงสลับหน้าที่
+[[queues.producers]]
+queue = "tnh-orchestrator-queue"
+binding = "ORCHESTRATOR_QUEUE"
+
+# ท่อประมวลผลขาเข้า (Consumers) - มีระบบป้องกันข้อมูลหลุด ประมวลผลล้มเหลวจะเข้าตู้ DLQ อัตโนมัติ
+[[queues.consumers]]
+queue = "tnh-orchestrator-queue"
+max_batch_size = 10         # ดึงข้อมูลรันทีละ 10 สัญญะ ป้องการหน่วยความจำล้น (Zero-Garbage)
+max_batch_timeout = 5       # รอรวมคิวสูงสุด 5 วินาที สับไวระดับไมโครวินาที
+max_retries = 3             # รันซ้ำสูงสุด 3 รอบ ถ้าพังเกินจะดีดเข้า DLQ
+dead_letter_queue = "tnh-garbage-dlq" # ตู้เซฟกักขยะข้อมูล ให้ขุนพล L5 ไอ้จ๊อด ไปล้างบาง
+
+# เปิดระบบสังเกตการณ์พฤติกรรม (Observability) ตามพิมพ์เขียวแท้ (🌱 j + ทอม 👾)
+[observability.traces]
+enabled = true
+destinations = [ "tnh-tracing-hub" ]
+head_sampling_rate = 0.05
+persist = false
+
+[observability.logs]
+enabled = true
+destinations = [ "tnh-log-sink" ]
+head_sampling_rate = 0.60
+persist = false
