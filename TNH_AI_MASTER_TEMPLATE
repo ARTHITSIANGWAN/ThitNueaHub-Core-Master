@@ -1,54 +1,40 @@
 TNH_AI_MASTER_TEMPLATE/
 ├── cmd/
-│   └── orchestra/                  # Entry point หลัก (L1 Commander)
-│       └── main.go
-│
-├── internal/                       # ← สำคัญที่สุด (ไม่ให้ import จากภายนอกได้)
-│   ├── core/                       # ระบบหลัก Orchestrator
-│   │   ├── commander.go            # L1 Commander
-│   │   ├── state.go                # LangGraph State Management
-│   │   ├── graph.go                # StateGraph Builder
-│   │   └── orchestrator.go
-│   │
-│   ├── guardians/                  # แยกแต่ละ Guardian (สำคัญมาก)
+│   └── orchestra/
+│       └── main.go              # Entry point หลักหลังบ้าน Pure Go Engine (Sovereign Port: 2026)
+├── internal/
+│   ├── core/                    # แกนสมองหลัก (ห้าม Import จากภายนอกเด็ดขาด)
+│   │   ├── commander.go         # L1 Commander Core (Boss Art Control)
+│   │   ├── state.go             # LangGraph State Management คงทนบริบท
+│   │   ├── graph.go             # StateGraph Builder ควบคุมลำดับการคิด
+│   │   └── orchestrator.go      # ระบบจัดคิวงานสับไวระดับไมโครวินาที
+│   ├── guardians/               # แยกโมดูลการทำงานและสิทธิ์เขียนของ 11 ขุนพล
 │   │   ├── l2_scribe/
-│   │   │   └── scribe.go
-│   │   ├── l3_artist/
+│   │   │   └── scribe.go        # บันทึกและควบคุมกลไกฝั่ง L2 แก้วตา
+│   │   ├── l3_artist/           # คลังตรรกะศัลยกรรมวิเคราะห์ n แบบมนุษย์ของ L3 น้ำอิง
 │   │   ├── l4_analyst/
-│   │   ├── l5_auditor/
-│   │   ├── l6_merchant/
-│   │   ├── l7_oracle/
-│   │   ├── l8_guardian/
-│   │   ├── l9_sentinel/
-│   │   ├── l10_auditor/
-│   │   └── l11_balancer/
-│   │
-│   ├── debate/                     # Cross-Department Debate
+│   │   ├── l5_auditor/          # คุมกฎ Zero-Garbage สั่งรันสคริปต์ล้างขยะความจำ
+│   │   └── [l6_to_l11_guardians]
+│   ├── debate/                  # โหมดถกเถียงข้ามแผนก (Cross-Department Debate)
 │   │   ├── debate.go
 │   │   └── consensus.go
-│   │
-│   ├── storage/                    # Database, Cache, Vector
-│   ├── config/                     # Configuration
-│   ├── utils/                      # Helper functions
-│   └── middleware/                 # Logging, Security, etc.
-│
-├── pkg/                            # Shared packages (import ได้จากภายนอก)
+│   ├── storage/                 # Data, Cache, Vector Storage Matrix
+│   ├── config/                  # ระบบตั้งค่าความปลอดภัยไร้ฮาร์ดโค้ดครีเดนเชียล
+│   ├── utils/                   # ฟังก์ชันตัวช่วยอำนวยความสะดวกระดับความเร็วแสง
+│   └── middleware/              # Logging, Security, Access Control
+├── pkg/                         # Shared Packages (สิทธิ์ที่อนุญาตให้ภายนอก Import ได้)
 │   └── shared/
 │       ├── types.go
 │       └── constants.go
-│
-├── templates/                      # Prompt templates, UI templates
-├── scripts/                        # Automation scripts
-├── deployments/
-│   ├── Dockerfile
-│   └── docker-compose.yml
+├── templates/                   # Prompt Templates & UI Templates
+├── scripts/                     # สคริปต์ออโตเมชันระบบอัตโนมัติ
+│   ├── init.sh
+│   └── deploy_tnh.sh            # สคริปต์สั่งรันและจัดส่งงานผ่าน GitHub Action
+├── deployments/                 # คอนเทนเนอร์และ Docker Control
 ├── docs/
-├── .github/workflows/
-├── TNH_MANIFESTO.md
-├── README.md
+├── .github/workflows/           # ท่อส่งงานอัตโนมัติ CI/CD
+├── TNH_MANIFESTO.md             # มหาคัมภีร์อุดมการณ์แห่งอาณาจักร
+├── AGENTS.md                    # กฎเหล็กการควบคุมพฤติกรรมขุนพล AI
 ├── go.mod
 ├── go.sum
-├── Makefile
 └── .env.example
-
-ผมว่าแบบนี้แยกคำสั่งชัดเจนกว่าไหม l1 ใช้คำสั่งตามที่ผมบอกและl2 ทำหน้าที่ของตัวเอง และยังเพิ่ม go start มา
