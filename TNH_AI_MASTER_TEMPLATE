@@ -1,4 +1,4 @@
-tnh_ai_master_template/
+TNH_AI_MASTER_TEMPLATE/
 ├── cmd/
 │   └── orchestra/
 │       └── main.go              # Entry point หลักหลังบ้าน Pure Go Engine (Sovereign Port: 2026)
