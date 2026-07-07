@@ -1,20 +1,22 @@
 # --- System Files ---
 .DS_Store
-.AppleDouble
-.LSOverride
 Thumbs.db
 
-# --- Environment & Keys ---
-.env
-.env.local
-.env.*.local
+# --- Environment & Secret Keys (ABSOLUTE LOCKDOWN) ---
+.env*
+!*.example
 secret.key
 config.json
+credentials/
 
-# --- Cloudflare Workers ---
+# --- Project Data & Integrity Monitor (LOCKED) ---
+/data/
+baseline.json
+*.db
+
+# --- Cloudflare & Deployment ---
 .wrangler/
 dist/
-dist.js
 /worker/dist/
 
 # --- Go Build Artifacts ---
@@ -23,25 +25,14 @@ dist.js
 /obj
 *.exe
 *.so
-*.dylib
-*.test
 *.out
 
-# --- Project Data & Logs ---
-/data/
+# --- SME Logic Protection (CRITICAL) ---
+templates/*.ml
+!templates/README.md
+internal/core/secrets/
+
+# --- Logs & Temp ---
 *.log
 *.tmp
 *.bak
-
-# --- IDE/Editor Folders ---
-.vscode/
-.idea/
-*.sublime-project
-*.sublime-workspace
-tnh_env/
-node_modules/
-tnh_env/
-*.db
-node_modules/
-tnh_env/
-*.db
