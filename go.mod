@@ -1,4 +1,4 @@
-module github.com/ARTHITSIANGWAN/TNH_AI_Master_Template
+module TNH-AI-MASTER-TEMPLATE
 
 go 1.26.3
 
