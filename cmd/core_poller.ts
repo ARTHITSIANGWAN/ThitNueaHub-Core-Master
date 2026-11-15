@@ -1,3 +1,7 @@
+// PROJECT NAME: TNH-AI-MASTER-TEMPLATE
+// FOLDER PATH: /cmd/
+// FILE NAME: core_poller.ts
+
 import { StrictValidator } from './validator';
 
 async function runTNHLoop(env: Env) {

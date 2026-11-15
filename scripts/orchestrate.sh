@@ -1,4 +1,8 @@
 #!/bin/bash
+# PROJECT NAME: TNH-AI-MASTER-TEMPLATE
+# FOLDER PATH: /scripts/
+# FILE NAME: orchestrate.sh
+
 # ⚔️ สคริปต์สั่งการกองทัพมหาอำนาจ ThitNueaHub V8.3
 # แก้ไขใส่ชื่อโฟลเดอร์จริงหลังบ้านตรงล็อก เพื่อไม่ให้ท่อหลอนพ่น Error
 PROJECTS=(

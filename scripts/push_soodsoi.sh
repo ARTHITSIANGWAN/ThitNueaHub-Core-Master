@@ -1,4 +1,8 @@
 #!/bin/bash
+# PROJECT NAME: TNH-AI-MASTER-TEMPLATE
+# FOLDER PATH: /scripts/
+# FILE NAME: push_soodsoi.sh
+
 # ==============================================================================
 # THITNUEAHUB AUTONOMOUS LOCAL ENGINE RECONCILIATION SCRIPT (5S COMPLIANT)
 # ==============================================================================

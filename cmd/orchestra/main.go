@@ -1,3 +1,7 @@
+// PROJECT NAME: TNH-AI-MASTER-TEMPLATE
+// FOLDER PATH: /cmd/orchestra/
+// FILE NAME: main.go
+
 // Project Name: tnh_ai
 // Folder Path: /cmd/orchestra/
 // File Name: main.go

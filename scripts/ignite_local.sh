@@ -1,4 +1,8 @@
 #!/bin/bash
+# PROJECT NAME: TNH-AI-MASTER-TEMPLATE
+# FOLDER PATH: /scripts/
+# FILE NAME: ignite_local.sh
+
 # TNH LOCAL WORKFLOW EMULATOR - PURE BASH LOGIC
 
 TARGET_REPO="TNH-AI-9th-Era-of-Fire-AI-Orchestra-Mastering-Go-Engine-"

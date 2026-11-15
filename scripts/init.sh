@@ -1,4 +1,8 @@
 #!/bin/bash
+# PROJECT NAME: TNH-AI-MASTER-TEMPLATE
+# FOLDER PATH: /scripts/
+# FILE NAME: init.sh
+
 # TNH-AI-MASTER Initialization Script
 
 echo "🏰 TNH-AI-MASTER: กำลังจัดเตรียมโครงสร้างระบบ..."

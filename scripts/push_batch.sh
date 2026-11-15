@@ -1,4 +1,8 @@
 #!/bin/bash
+# PROJECT NAME: TNH-AI-MASTER-TEMPLATE
+# FOLDER PATH: /scripts/
+# FILE NAME: push_batch.sh
+
 # Blueprint: ThitNueaHub Offline Batch Push Protocol (Port 22)
 
 TARGET_DIR="/sdcard/ThitNueaHub_Local/tasks_by_group/eleven_white_tiger"

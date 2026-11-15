@@ -1,3 +1,7 @@
+# PROJECT NAME: TNH-AI-MASTER-TEMPLATE
+# FOLDER PATH: /.github/workflows/
+# FILE NAME: sood-soi.yml
+
 name: TNH_AI_SOOD_SOI_MASTER
 on:
   workflow_dispatch: # สั่งรันมือได้ตลอดเวลาจาก Chrome Dev

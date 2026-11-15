@@ -1,4 +1,8 @@
 #!/bin/bash
+# PROJECT NAME: TNH-AI-MASTER-TEMPLATE
+# FOLDER PATH: /scripts/
+# FILE NAME: purge_workflows.sh
+
 # --- TNH Purge Protocol: กวาดล้าง Workflow ขยะให้สิ้นซาก ---
 # กฎ: ลบทุกอย่างใน .github/workflows/ ยกเว้นที่ฐานบัญชาการใหญ่ (TNH_AI_Master_Template)
 

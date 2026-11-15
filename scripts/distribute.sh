@@ -1,4 +1,8 @@
 #!/bin/bash
+# PROJECT NAME: TNH-AI-MASTER-TEMPLATE
+# FOLDER PATH: /scripts/
+# FILE NAME: distribute.sh
+
 # TNH_AI_ORCHESTRATOR: สั่งการกองทัพ 11 ขุนพล
 # Usage: ./scripts/orchestrate.sh
 

@@ -1,4 +1,8 @@
 #!/bin/bash
+# PROJECT NAME: TNH-AI-MASTER-TEMPLATE
+# FOLDER PATH: /scripts/
+# FILE NAME: deploy_tnh.sh
+
 
 # ==============================================================================
 # Project: ThitNueaHub | Premium 2000% Automation Deployment

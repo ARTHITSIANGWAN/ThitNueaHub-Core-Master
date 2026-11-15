@@ -1,4 +1,8 @@
 #!/data/data/com.termux/files/usr/bin/bash
+# PROJECT NAME: TNH-AI-MASTER-TEMPLATE
+# FOLDER PATH: /scripts/
+# FILE NAME: health_check.sh
+
 # Project Name: tnh_ai
 # Folder Path: /scripts/
 # File Name: health_check.sh

@@ -1,4 +1,8 @@
 #!/bin/bash
+# PROJECT NAME: TNH-AI-MASTER-TEMPLATE
+# FOLDER PATH: /scripts/
+# FILE NAME: update_benchmark.sh
+
 # ==============================================================================
 # THITNUEAHUB PERFORMANCE METRICS & BENCHMARK AUTOMATION SCRIPT (L5 LAYER)
 # ==============================================================================
