@@ -1,108 +1,38 @@
+// Project Name: tnh_ai
+// Folder Path: /cmd/orchestra/
+// File Name: main.go
+
 package main
 
 import (
-	"context"
-	"crypto/hmac"
-	"crypto/sha256"
-	"encoding/hex"
-	"fmt"
-	"log"
-	"os"
-	"time"
-
-	"github.com/gofiber/fiber/v2" // ใช้ Fiber Engine ความเร็วแสง ไร้ขยะ Allocation
+"encoding/json"
+"log/slog"
+"net/http"
+"os"
+"time"
 )
 
-var SECURITY_SECRET = []byte(os.Getenv("SECRET"))
-const LISTEN_PORT = ":2026"
-const TASK_QUEUE_LIMIT = 128
-
-// โครงสร้างภาษากลางสัญญะคำสั่งควบคุมฝูงบินรบสมองกล (Zero-Garbage Optimized)
-type GripenCommandPayload struct {
-	CommandID string                 `json:"command_id"`
-	Action    string                 `json:"action"`
-	Squadron  string                 `json:"squadron"`
-	MetaInfo  map[string]interface{} `json:"meta_info"`
-	Timestamp int64                  `json:"timestamp"`
-	Signature string                 `json:"signature"`
-}
-
-var centralJobQueue = make(chan GripenCommandPayload, TASK_QUEUE_LIMIT)
-
-func init() {
-	if len(SECURITY_SECRET) == 0 {
-		SECURITY_SECRET = []byte("tnh-gripen-sovereign-secret-2026")
-	}
-}
-
 func main() {
-	app := fiber.New(fiber.Config{
-		Prefork:       false,
-		ServerHeader:  "TNH-Gripen-Core-V84.9.2",
-		AppName:       "ThitNueaHub Command Center",
-	})
-
-	// 🏰 Layer 🔝 & 1️⃣: ประตูด่านหน้าประกาศศักดาความยิ่งใหญ่
-	app.Get("/", func(c *fiber.Ctx) error {
-		return c.SendString("<h1>🏰 TNH V84.9.2 GRIPEN SQUADRON ENGINE ONLINE</h1>")
-	})
-
-	// 📡 Layer 🔟 & 9️⃣: Endpoint รับคำสั่งยุทธศาสตร์ ส่งต่อเข้าคิวส้มประมวลผลเบื้องหลัง
-	app.Post("/api/v84/squadron/launch", func(c *fiber.Ctx) error {
-		payload := new(GripenCommandPayload)
-		if err := c.BodyParser(payload); err != nil {
-			return c.Status(fiber.StatusBadRequest).SendString("Invalid Payload Structure")
-		}
-
-		// ตรวจสอบลายเซ็นดักจับแฮกเกอร์ ป้องกันดาต้ารั่วไหลออกนอกจักรวรรดิ
-		if !validateHMAC(*payload, payload.Signature) {
-			return c.Status(fiber.StatusUnauthorized).SendString("🛡️ Security Breach: Invalid Token Signature")
-		}
-
-		// ดันคำสั่งฝูงบินรบเข้าสู่คิวประมวลผลกลางสับไวระดับไมโครวินาที
-		select {
-		case centralJobQueue <- *payload:
-			// 🕵️ สั่งการลูกน้อง L2 แก้วตา: บันทึก Logs ลง D1 และส่งข้อมูลผ่านด่าน AI Gateway ทันที
-			go triggerKaewtaMonitor(payload.CommandID, payload.Squadron)
-			
-			return c.JSON(fiber.Map{
-				"status":           "🍊 Dispatched to Orange Queue",
-				"provider_name":    "tnh-ai-v83-trinity-empire",
-				"cloudflare_relay": "tnh-files.9thera.workers.dev",
-				"command_id":       payload.CommandID,
-			})
-		default:
-			return c.Status(fiber.StatusServiceUnavailable).SendString("Central Queue Overflow")
-		}
-	})
-
-	// จุดชนวนเปิดพูลฝูงบินรบคู่ขนาน 4 Workers รันเบื้องหลังแบบไม่กิน Ram
-	for workerID := 1; workerID <= 4; workerID++ {
-		go runSovereignSquadronWorker(workerID)
-	}
-
-	log.Fatal(app.Listen(LISTEN_PORT))
+logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
+port := os.Getenv("PORT")
+if port == "" {
+port = "2026"
 }
 
-func generateHMAC(p GripenCommandPayload) string {
-	mac := hmac.New(sha256.New, SECURITY_SECRET)
-	mac.Write([]byte(fmt.Sprintf("%s:%s:%s:%d", p.CommandID, p.Action, p.Squadron, p.Timestamp)))
-	return hex.EncodeToString(mac.Sum(nil))
-}
+mux := http.NewServeMux()
+mux.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
+w.Header().Set("Content-Type", "application/json")
+_ = json.NewEncoder(w).Encode(map[string]any{
+"status":    "operational",
+"node":      "OPPO-A79-5G-Primary",
+"system":    "TNH-AI-MASTER-TEMPLATE",
+"timestamp": time.Now().Format(time.RFC3339),
+})
+})
 
-func validateHMAC(p GripenCommandPayload, sig string) bool {
-	return generateHMAC(p) == sig
+logger.Info("Starting Zero-Garbage Pure Go Core", "port", port)
+if err := http.ListenAndServe(":"+port, mux); err != nil {
+logger.Error("Server stopped", "error", err)
+os.Exit(1)
 }
-
-func triggerKaewtaMonitor(id string, squad string) {
-	// จำลองท่อส่งสัญญาณบอก L2 แก้วตา ให้สั่งคุม AI Gateway ผ่าน Edge Workers
-	log.Printf("⚡ [L1 -> L2 แก้วตา]: ล็อกพิกัดคำสั่งฝูงบิน %s (ID: %s) ผ่านด่านตรวจ AI Gateway เรียบร้อย ห้ามเปิดฝั่ง Google เด็ดขาด!\n", squad, id)
-}
-
-func runSovereignSquadronWorker(id int) {
-	for job := range centralJobQueue {
-		log.Printf("✈️ [ฝูงบิน Gripen Worker %d] กำลังทำศัลยกรรมตรรกะประมวลผลคำสั่งระบบปิด ID: %s\n", id, job.CommandID)
-		// 🧹 สั่งการลูกน้อง L5 ไอ้จ๊อด: สแกนล้างเคลียร์ประวัติ Context และเศษขยะหน่วยความจำคืนระบบทันทีตามกฎ 5 ส
-		log.Printf("🧹 [L1 -> L5 ไอ้จ๊อด]: รันสคริปต์ [สุดซอย V3] ชำระล้างหน่วยความจำของ Job %s เกลี้ยง 100% ไร้ Allocation บวม\n", job.CommandID)
-	}
 }

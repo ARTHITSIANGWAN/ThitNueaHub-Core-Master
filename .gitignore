@@ -36,3 +36,6 @@ internal/core/secrets/
 *.log
 *.tmp
 *.bak
+
+.env
+tnh-core
