@@ -1,60 +1,47 @@
+// PROJECT NAME: ThitNueaHub-Core-Master 
+// FOLDER PATH: /cmd/security_audit/ 
+// FILE NAME: main.go
+
 package main
 
 import (
-	"crypto/hmac"
-	"crypto/sha256"
 	"database/sql"
-	"encoding/hex"
 	"fmt"
+	"log"
 	"os"
 
-	_ "modernc.org/sqlite"
+	"github.com/ARTHITSIANGWAN/ThitNueaHub-Core-Master/backend/core"
 )
 
 func main() {
-	fmt.Println("==================================================")
-	fmt.Println("🛡️ TNH V84.9.2 - SECURITY INTEGRITY AUDIT ENGINE")
-	fmt.Println("==================================================")
-
-	// 1. ตรวจสอบความสมบูรณ์ของฐานข้อมูล SQLite WAL
-	dbPath := "./tnh_jobs.db"
-	if _, err := os.Stat(dbPath); os.IsNotExist(err) {
-		file, _ := os.Create(dbPath)
-		file.Close()
-	}
-
-	db, err := sql.Open("sqlite", dbPath+"?_busy_timeout=5000&_journal_mode=WAL")
-	if err != nil {
-		fmt.Printf("🔴 Database Integrity Check : %s [FAILED]\n", dbPath)
-	} else {
-		defer db.Close()
-		if err := db.Ping(); err == nil {
-			fmt.Printf("🟢 Database Integrity Check : %s [SECURE]\n", dbPath)
-		} else {
-			fmt.Printf("⚠️ Database Integrity Check : %s [WARNING]\n", dbPath)
+	dbPath := "tnh_core.db"
+	if _, err := os.Stat(dbPath); err == nil {
+		db, err := sql.Open("sqlite", dbPath)
+		if err != nil {
+			log.Fatalf("open sqlite failed: %v", err)
 		}
-	}
+		defer db.Close()
 
-	// 2. ทดสอบระบบ HMAC-SHA256 Token Verification
-	secret := []byte("tnh-gripen-sovereign-secret-2026")
-	testPayload := "COMMAND:EXECUTE:SQUADRON_ALPHA"
-
-	mac := hmac.New(sha256.New, secret)
-	mac.Write([]byte(testPayload))
-	validSig := hex.EncodeToString(mac.Sum(nil))
-
-	// จำลองการตรวจสอบสิทธิ์
-	h := hmac.New(sha256.New, secret)
-	h.Write([]byte(testPayload))
-	expectedSig := hex.EncodeToString(h.Sum(nil))
-
-	if hmac.Equal([]byte(validSig), []byte(expectedSig)) {
-		fmt.Println("🟢 HMAC-SHA256 Token Engine : PASSED [AUTHENTICATED]")
+		var integrity string
+		if err := db.QueryRow("PRAGMA integrity_check;").Scan(&integrity); err != nil {
+			log.Fatalf("sqlite integrity check failed: %v", err)
+		}
+		fmt.Printf("SQLite Integrity (%s): %s\n", dbPath, integrity)
 	} else {
-		fmt.Println("❌ HMAC-SHA256 Token Engine : FAILED")
+		fmt.Printf("SQLite Audit: %s not initialized yet (skipped)\n", dbPath)
 	}
 
-	fmt.Println("--------------------------------------------------")
-	fmt.Println("✅ Security Audit Completed Successfully. Zero Vulnerabilities.")
-	fmt.Println("==================================================")
+	auditPayload := []byte("L1-CEO-001|L10-COMPLIANCE|AUDIT_PING")
+	sig, err := core.SignPayload(auditPayload)
+	if err != nil {
+		log.Fatalf("L8 Glock audit sign failed: %v", err)
+	}
+
+	ok, err := core.VerifyPayload(auditPayload, sig)
+	if err != nil || !ok {
+		log.Fatalf("L8 Glock audit verify failed: %v", err)
+	}
+
+	fmt.Println("Security & L8 HMAC Perimeter Audit: PASSED")
 }
+
