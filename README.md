@@ -1,75 +1,40 @@
-# 🏛️ TNH MATRIX v83 - MASTER IDENTITY & SYSTEM MANIFEST
+<!--
+PROJECT NAME: ThitNueaHub-Core-Master
+FOLDER PATH: /
+FILE NAME: README.md
+-->
 
-> **Status:** SOVEREIGN OPERATIONAL (Audit-Ready)
-> **Primary Bus:** Encrypted Sovereign Edge Control Engine (`Sovereign Node v83`)
-> **Data Collision Rate:** 0.00% | **Execution Latency:** 0.xxms - 0.xxms (Zero-Garbage)
+# ThitNueaHub-Core-Master (`TNH-AI-THITNUEAHUB`)
+
+> Sovereign Pure Go Backend Infrastructure, 11-Layer Multi-Agent Governance, and Mobile-First Edge Orchestration (`#tnhAi` `#thitnueahub`).
+
+[![Go Version](https://img.shields.io/badge/Go-1.23+-00ADD8?logo=go&logoColor=white)](https://go.dev/)
+[![Storage](https://img.shields.io/badge/SQLite-WAL%20Mode-003B57?logo=sqlite&logoColor=white)](https://www.sqlite.org/wal.html)
+[![Runtime](https://img.shields.io/badge/Runtime-Android%20Termux%20%26%20Linux-2496ED)](https://termux.dev/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 ---
 
+## Overview
+
+**ThitNueaHub-Core-Master** is the foundational architecture repository for the **TNH-AI-THITNUEAHUB** ecosystem. Built with pure Go and zero external framework bloat, it is engineered for deterministic execution on resource-constrained mobile environments (Android Termux) as well as standard Linux containers.
+
+### Core Engineering Principles
+* **Zero-Garbage Discipline**: Minimal allocations, explicit error handling, and clean file boundaries with mandatory project metadata headers.
+* **Strict 11-Layer Separation (`L1`–`L11`)**: Every agent and service module operates within a single, non-overlapping responsibility boundary.
+* **Edge-First Privacy**: Customer payloads are processed at the endpoint/client boundary without unauthorized central retention; only legally required insight records are persisted.
+* **Cryptographic Perimeter**: Inter-layer envelopes are authenticated using environment-injected `HMAC-SHA256` signatures.
+
+---
+
+## System Architecture
+
 ```mermaid
 graph TD
-%% Define Node Styles
-classDef tnh_core fill:#cce5ff,stroke:#004085,stroke-width:2px,rx:10,ry:10,color:black,font-weight:bold;
-classDef tnh_data fill:#d4edda,stroke:#155724,stroke-width:2px,rx:10,ry:10,color:black,font-weight:bold;
-classDef tnh_network fill:#fff3cd,stroke:#856404,stroke-width:2px,rx:10,ry:10,color:black,font-weight:bold;
-classDef tnh_directive fill:#f8d7da,stroke:#721c24,stroke-width:2px,rx:10,ry:10,color:black,font-weight:bold;
-
-%% Data Flow Root
-Root[TNH System Flow v83]:::tnh_core --> Directive;
-
-%% Directive Processing Branch
-subgraph Directive_Processing ["คำสั่งประมวลผล"]
-    Directive(TNH_Master_Directive_PhraiThong_NamIng_V83):::tnh_directive;
-    ParsedDirective["สถานะ: สำเร็จ / ผ่านการตีความ"]:::tnh_data;
-    StoredDirective["สถานะ: จัดเก็บแล้ว"]:::tnh_data;
-    Directive --> ParsedDirective;
-    ParsedDirective --> StoredDirective;
-    StoredDirective --> NetworkAnalyticsCore;
-end
-
-%% Network Analytics Core Branch
-subgraph Network_Analytics_Core ["แกนวิเคราะห์เครือข่าย L4"]
-    NetworkAnalyticsCore(L4 พรายทอง - แกนวิเคราะห์เครือข่าย GitHub):::tnh_core;
-    AuditResult["ผลการตรวจสอบ"]:::tnh_data;
-    NetworkAnalyticsCore --> AuditResult;
-
-    %% Audit Result Breakdown
-    subgraph Audit_Breakdown ["รายละเอียดการตรวจสอบ"]
-        Account["บัญชี: ผู้ดูแลระบบ ARTHITSIANGWAN"]:::tnh_core;
-        ActiveRepos["คลังข้อมูลที่เปิดใช้งาน: ทั้งหมด"]:::tnh_core;
-        NetworkConnections["การเชื่อมต่อเครือข่าย: ติดตาม - บัญชี"]:::tnh_network;
-        CoreTech["เน้นเทคโนโลยีหลัก: Pure Go, Zero-Garbage AI"]:::tnh_core;
-        AccuracyTarget["เป้าหมายความแม่นยำของระบบ: 98.50%"]:::tnh_core;
-        LoopingRate["อัตราการทำงานซ้ำ: 0.00% ถูกกำจัด"]:::tnh_core;
-        
-        AuditResult --> Account;
-        AuditResult --> ActiveRepos;
-        AuditResult --> NetworkConnections;
-        AuditResult --> CoreTech;
-        AuditResult --> AccuracyTarget;
-        AuditResult --> LoopingRate;
-    end
-
-    %% Network Geography Breakdown
-    subgraph Geo_Scope ["ขอบเขตภูมิศาสตร์"]
-        ConnectionsGeographic["ขอบเขตภูมิศาสตร์การเชื่อมต่อ"]:::tnh_network;
-        Europe(ยุโรป);
-        MiddleEast(ตะวันออกกลาง);
-        Asia(เอเชีย);
-        Americas(อเมริกา);
-        ConnectionsGeographic --> Europe;
-        ConnectionsGeographic --> MiddleEast;
-        ConnectionsGeographic --> Asia;
-        ConnectionsGeographic --> Americas;
-    end
-end
-
-%% Storage Archival Branch
-subgraph Storage_Archival ["การเก็บถาวรข้อมูล"]
-    ArchivedTo["เก็บถาวรที่"]:::tnh_data;
-    R2Storage["ระบบเก็บข้อมูล R2"]:::tnh_data;
-    Verified["ยืนยันแล้ว 100%"]:::tnh_data;
-    AuditResult --> ArchivedTo;
-    ArchivedTo --> R2Storage;
-    R2Storage --> Verified;
-end
+    Client[Client / Edge Endpoint] --> L8[L8 Glock: HMAC-SHA256 Guard]
+    L8 --> L4[L4 Bridge: API & Android Gateway]
+    L4 --> L7[L7 Oracle: Reasoning & Analytics]
+    L4 --> L5[L5 Engine: Go Workers & SQLite WAL]
+    L9[L9 Sentinel: Anomaly & Rate Guard] -.-> L4
+    L10[L10 Compliance: Privacy & Audit] -.-> L5
+    L11[L11 Balancer: Termux Resource Control] -.-> L5
