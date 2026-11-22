@@ -1,6 +1,5 @@
-// Project Name: ThitNueaHub-Core-Master
-// Folder Path: /backend/core/
-// File Name: hmac_guard.go
+// PROJECT NAME: ThitNueaHub-Core-Master // FOLDER PATH: /backend/core/ // FILE NAME: hmac_guard.go
+package core
 
 import (
 	"crypto/hmac"
