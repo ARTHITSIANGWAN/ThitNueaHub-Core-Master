@@ -1,41 +1,46 @@
-# --- System Files ---
+# PROJECT NAME: TNH-AI-MASTER-TEMPLATE
+# FOLDER PATH: /
+# FILE NAME: .gitignore
+
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+coverage.*
+*.coverprofile
+profile.cov
+dist/
+build/
+go.work
+go.work.sum
+.env
+.env.*
+*.secret
+*.key
+*.pem
+secrets/
+.wrangler/
+.dev.vars
+.mf/
+*.db
+*.db-wal
+*.db-shm
+*.log
+tunnel.log
+tnh_reports.*
+*.mp4
+*.png
+*.jpg
+*.wav
+*.mp3
 .DS_Store
 Thumbs.db
-
-# --- Environment & Secret Keys (ABSOLUTE LOCKDOWN) ---
-.env*
-!*.example
-secret.key
-config.json
-credentials/
-
-# --- Project Data & Integrity Monitor (LOCKED) ---
-/data/
-baseline.json
-*.db
-
-# --- Cloudflare & Deployment ---
-.wrangler/
-dist/
-/worker/dist/
-
-# --- Go Build Artifacts ---
-/bin
-/pkg
-/obj
-*.exe
-*.so
-*.out
-
-# --- SME Logic Protection (CRITICAL) ---
-templates/*.ml
-!templates/README.md
-internal/core/secrets/
-
-# --- Logs & Temp ---
-*.log
-*.tmp
-*.bak
-
-.env
-tnh-core
+ehthumbs.db
+.vscode/
+.idea/
+.project
+.classpath
+.settings/
