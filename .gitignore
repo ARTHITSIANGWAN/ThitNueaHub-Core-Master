@@ -46,3 +46,4 @@ ehthumbs.db
 .settings/
 *.bak
 workers/wrangler.toml
+assets/agents/
