@@ -1,0 +1,127 @@
+<!--
+Project Name: TNH-AI-MASTER-TEMPLATE
+Folder Path: /web/
+File Name: index.html
+-->
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>THITNUEAHUB | ระบบเอไออธิปไตยแบบออฟไลน์</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --color-cyan: #69e6f5;
+      --color-blue: #43b9e8;
+      --color-green: #55d6a0;
+      --color-emerald: #22b98a;
+      --glass-bg: rgba(16, 42, 50, 0.72);
+      --glass-border: rgba(105, 230, 245, 0.35);
+      --text-primary: #edf8f7;
+      --text-secondary: #b4d2d6;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Noto Sans Thai', system-ui, sans-serif;
+      color: var(--text-primary);
+      min-height: 100vh;
+      background:
+        linear-gradient(160deg, rgba(10, 28, 34, 0.84) 0%, rgba(16, 42, 50, 0.92) 100%),
+        url('https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?auto=format&fit=crop&w=1200&q=80') center/cover no-repeat fixed;
+      display: flex; align-items: center; justify-content: center; padding: 20px 16px;
+    }
+    .container { width: min(100%, 960px); }
+    .glass-panel {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      border-radius: 20px; padding: 24px;
+      box-shadow: 0 12px 36px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.18);
+    }
+    .header { text-align: center; border-bottom: 1px solid rgba(255,255,255,0.12); padding-bottom: 18px; }
+    .badge {
+      display: inline-block; background: rgba(34,185,138,0.22); border: 1px solid var(--color-emerald);
+      color: var(--color-cyan); font-size: 0.8rem; font-weight: 600; padding: 4px 14px; border-radius: 999px; margin-bottom: 10px;
+    }
+    h1 {
+      font-size: clamp(1.4rem, 4vw, 2rem); font-weight: 700;
+      background: linear-gradient(90deg, var(--color-cyan), var(--color-green));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .motto { margin-top: 10px; font-size: 0.95rem; color: var(--color-cyan); font-weight: 600; font-style: italic; }
+    .channel-bar { display: grid; grid-template-columns: 1fr; gap: 12px; margin-top: 18px; }
+    @media (min-width: 640px) { .channel-bar { grid-template-columns: 1fr 1fr; } }
+    .channel-btn {
+      display: flex; align-items: center; justify-content: space-between; padding: 12px 16px;
+      background: rgba(105,230,245,0.10); border: 1px solid rgba(105,230,245,0.35);
+      border-radius: 14px; color: var(--text-primary); text-decoration: none; font-weight: 600; font-size: 0.92rem;
+    }
+    .channel-tag { font-size: 0.75rem; padding: 2px 8px; border-radius: 8px; background: var(--color-emerald); color: #091c22; font-weight: 700; }
+    .flow-grid { display: grid; grid-template-columns: 1fr; gap: 16px; margin-top: 20px; }
+    @media (min-width: 768px) { .flow-grid { grid-template-columns: repeat(3, 1fr); } }
+    .step-card { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.16); border-radius: 16px; padding: 18px; }
+    .step-num {
+      display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 10px;
+      background: linear-gradient(135deg, var(--color-blue), var(--color-emerald)); color: #091c22; font-weight: 700; margin-bottom: 12px;
+    }
+    .step-title { font-size: 1.05rem; font-weight: 700; color: var(--color-cyan); margin-bottom: 6px; }
+    .step-desc { font-size: 0.88rem; color: var(--text-secondary); line-height: 1.55; }
+    .highlight-box {
+      margin-top: 10px; padding: 8px 12px; background: rgba(34,185,138,0.14);
+      border-left: 3px solid var(--color-green); border-radius: 6px; font-size: 0.8rem;
+    }
+    .footer-bar {
+      display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px;
+      margin-top: 20px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.12); font-size: 0.82rem; color: var(--text-secondary);
+    }
+    .status-dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: var(--color-green); box-shadow: 0 0 10px var(--color-green); margin-right: 6px; }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <section class="glass-panel">
+      <header class="header">
+        <span class="badge">THITNUEAHUB • MOBILE AI LAB (100% MOBILE FIRST)</span>
+        <h1>ระบบเอไออธิปไตยแบบออฟไลน์</h1>
+        <p class="motto">“อย่าสร้างสิ่งที่พิสูจน์แล้วว่าใช้งานได้ ขึ้นมาใหม่ จงต่อยอดจากสิ่งที่ทำงานได้จริง..”</p>
+      </header>
+      <div class="channel-bar">
+        <a class="channel-btn" href="https://www.youtube.com/@thitnueahub_ai_lab" target="_blank" rel="noopener">
+          <span>🎬 @thitnueahub_ai_lab</span><span class="channel-tag">MAIN LAB</span>
+        </a>
+        <a class="channel-btn" href="https://www.youtube.com/@thitnueahub_mobile_ai_lab" target="_blank" rel="noopener">
+          <span>📱 @thitnueahub_mobile_ai_lab</span><span class="channel-tag">MOBILE 24/7</span>
+        </a>
+      </div>
+      <div class="flow-grid">
+        <article class="step-card">
+          <div class="step-num">1</div>
+          <h2 class="step-title">Pure Go Core (:2026)</h2>
+          <p class="step-desc">ควบคุมคิวงานและแยกท่อข้อมูล (Music / Tech) บน OPPO A79 5G ด้วยความเร็วระดับไมโครวินาที</p>
+          <div class="highlight-box">⚡ Zero-Garbage • ต้นทุนต่ำ (ไม่เสียค่าเช่าคลาวด์)</div>
+        </article>
+        <article class="step-card">
+          <div class="step-num">2</div>
+          <h2 class="step-title">FFmpeg Auto-Render</h2>
+          <p class="step-desc">ต่อคลิป 20 ซีน (200 วินาที) อัตโนมัติบน Termux แยกสัดส่วน 16:9 และ 9:16 พร้อมลายน้ำ tnh'ai</p>
+          <div class="highlight-box">🎞️ รันอัตโนมัติบนมือถือ 100%</div>
+        </article>
+        <article class="step-card">
+          <div class="step-num">3</div>
+          <h2 class="step-title">24/7 Stream & Auto-Post</h2>
+          <p class="step-desc">โหนดสตรีมสด 24 ชั่วโมงบน Redmi Note 9 และระบบโพสต์อัตโนมัติตามตารางเวลา</p>
+          <div class="highlight-box">📡 สตรีมต่อเนื่อง • คิวออฟไลน์เสถียร</div>
+        </article>
+      </div>
+      <footer class="footer-bar">
+        <div><span class="status-dot"></span><span id="live-telemetry">กำลังดึงข้อมูลสถานะจริงจาก Go (:2026)...</span></div>
+        <div>tnh'ai • Transparent Glass Standard V1.0</div>
+      </footer>
+    </section>
+  </main>
+  <script src="/status.js"></script>
+</body>
+</html>

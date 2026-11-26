@@ -1,0 +1,307 @@
+<!--
+PROJECT NAME: TNH-AI-THITNUEAHUB
+FOLDER PATH: /web/
+FILE NAME: ffmpeg.html
+-->
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FFmpeg Tech Lab | THITNUEAHUB (tnh_ai)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Noto+Sans+Thai:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --color-cyan: #69e6f5;
+      --color-blue: #43b9e8;
+      --color-green: #55d6a0;
+      --color-emerald: #22b98a;
+      --color-amber: #fbbf24;
+      --glass-bg: rgba(16, 42, 50, 0.74);
+      --glass-border: rgba(105, 230, 245, 0.35);
+      --text-primary: #edf8f7;
+      --text-secondary: #b4d2d6;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Noto Sans Thai', system-ui, sans-serif;
+      color: var(--text-primary);
+      min-height: 100vh;
+      background:
+        linear-gradient(160deg, rgba(10, 28, 34, 0.85) 0%, rgba(16, 42, 50, 0.93) 100%),
+        url('https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?auto=format&fit=crop&w=1200&q=80') center/cover no-repeat fixed;
+      padding: 18px 14px 36px;
+    }
+    .mono { font-family: 'JetBrains Mono', monospace; }
+    .container { width: min(100%, 960px); margin-inline: auto; display: flex; flex-direction: column; gap: 16px; }
+
+    /* ป้ายแจ้งเตือนเฉพาะจอคอมพิวเตอร์ */
+    .mobile-notice-banner {
+      display: none;
+      background: rgba(105, 230, 245, 0.12);
+      border: 1px solid rgba(105, 230, 245, 0.35);
+      color: var(--text-primary);
+      padding: 10px 16px;
+      border-radius: 12px;
+      font-size: 0.84rem;
+      text-align: center;
+    }
+    @media (min-width: 768px) { .mobile-notice-banner { display: block; } }
+
+    .glass-panel {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      border-radius: 20px; padding: 20px;
+      box-shadow: 0 12px 36px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.16);
+    }
+
+    /* โซน 1: ป้ายหน้าห้อง */
+    .top-nav { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 14px; }
+    .back-link {
+      text-decoration: none; color: var(--color-cyan); font-size: 0.82rem; font-weight: 600;
+      padding: 6px 12px; border-radius: 10px; background: rgba(105, 230, 245, 0.10);
+      border: 1px solid rgba(105, 230, 245, 0.3);
+    }
+    .room-badge {
+      font-size: 0.75rem; font-weight: 700; padding: 4px 12px; border-radius: 999px;
+      background: rgba(34, 185, 138, 0.22); border: 1px solid var(--color-emerald); color: var(--color-green);
+    }
+    h1 {
+      font-size: clamp(1.35rem, 4vw, 1.85rem); font-weight: 700;
+      background: linear-gradient(90deg, var(--color-cyan), var(--color-green));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .lead-desc { font-size: 0.9rem; color: var(--text-secondary); line-height: 1.6; margin-top: 8px; }
+    .tip-strip {
+      margin-top: 14px; padding: 10px 14px; border-radius: 12px;
+      background: rgba(34, 185, 138, 0.12); border-left: 3px solid var(--color-emerald);
+      font-size: 0.83rem; line-height: 1.55; color: var(--text-primary);
+    }
+
+    /* โซน 2: โต๊ะทดลองประกอบคำสั่ง */
+    .section-title { font-size: 1.05rem; font-weight: 700; color: var(--color-cyan); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+    .mission-tabs { display: grid; grid-template-columns: 1fr; gap: 8px; margin-bottom: 14px; }
+    @media (min-width: 640px) { .mission-tabs { grid-template-columns: repeat(3, 1fr); } }
+    .tab-btn {
+      text-align: left; padding: 12px; border-radius: 14px; cursor: pointer;
+      background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.16);
+      color: var(--text-primary); font-family: inherit; transition: all 0.2s;
+    }
+    .tab-btn.active {
+      background: rgba(105, 230, 245, 0.16); border-color: var(--color-cyan);
+      box-shadow: 0 0 16px rgba(105, 230, 245, 0.18);
+    }
+    .tab-level { display: block; font-size: 0.72rem; color: var(--color-green); font-weight: 700; margin-bottom: 3px; }
+    .tab-name { font-size: 0.9rem; font-weight: 700; }
+
+    .code-box {
+      background: rgba(7, 19, 24, 0.88); border: 1px solid rgba(105, 230, 245, 0.28);
+      border-radius: 14px; padding: 14px; position: relative;
+    }
+    .code-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-size: 0.78rem; color: var(--text-secondary); }
+    .copy-btn {
+      background: linear-gradient(135deg, var(--color-blue), var(--color-emerald));
+      color: #081b21; border: none; border-radius: 8px; padding: 5px 12px;
+      font-family: inherit; font-size: 0.78rem; font-weight: 700; cursor: pointer;
+    }
+    pre {
+      white-space: pre-wrap; word-break: break-all; font-size: 0.82rem;
+      line-height: 1.55; color: var(--color-cyan);
+    }
+
+    .breakdown-list { margin-top: 14px; display: flex; flex-direction: column; gap: 8px; }
+    .breakdown-item {
+      background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.10);
+      border-radius: 10px; padding: 10px 12px; font-size: 0.84rem; line-height: 1.5;
+    }
+    .flag-tag {
+      display: inline-block; background: rgba(105, 230, 245, 0.15); color: var(--color-cyan);
+      padding: 1px 7px; border-radius: 6px; font-size: 0.78rem; font-weight: 600; margin-right: 6px;
+    }
+
+    /* โซน 3: ด่านตรวจรับรองผล 127.0.0.1:2026 */
+    .gate-box {
+      border-radius: 16px; padding: 16px;
+      background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.18);
+    }
+    .gate-status { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+    .status-pill {
+      display: inline-flex; align-items: center; gap: 8px; font-size: 0.82rem; font-weight: 700;
+      padding: 5px 12px; border-radius: 999px;
+    }
+    .status-online { background: rgba(34, 185, 138, 0.22); color: var(--color-green); border: 1px solid var(--color-emerald); }
+    .status-locked { background: rgba(251, 191, 36, 0.18); color: var(--color-amber); border: 1px solid var(--color-amber); }
+    .test-btn {
+      background: rgba(105, 230, 245, 0.14); border: 1px solid var(--color-cyan);
+      color: var(--color-cyan); padding: 7px 14px; border-radius: 10px;
+      font-family: inherit; font-size: 0.82rem; font-weight: 600; cursor: pointer;
+    }
+    .gate-msg { margin-top: 12px; font-size: 0.86rem; line-height: 1.6; color: var(--text-secondary); }
+    .quickstart-mini {
+      margin-top: 10px; padding: 10px 12px; border-radius: 10px;
+      background: rgba(7, 19, 24, 0.75); border: 1px dashed rgba(251, 191, 36, 0.45);
+      font-size: 0.78rem; color: #fde68a; line-height: 1.55;
+    }
+
+    footer { text-align: center; font-size: 0.78rem; color: var(--text-secondary); margin-top: 6px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="mobile-notice-banner" role="status">
+      📱 <strong>Mobile-First Optimized:</strong> ห้องทดลองนี้ออกแบบมาเพื่อการใช้งานบน<strong>มือถือ (Termux)</strong> เป็นหลัก แนะนำให้เปิดผ่านสมาร์ตโฟนเพื่อประสบการณ์ที่สมบูรณ์ที่สุดครับ
+    </div>
+
+    <!-- โซน 1: ป้ายหน้าห้อง -->
+    <section class="glass-panel">
+      <div class="top-nav">
+        <a href="/" class="back-link">← กลับหน้าหลัก</a>
+        <span class="room-badge mono">LAB 01 • FFMPEG TECH</span>
+      </div>
+      <h1>ห้องทดลอง FFmpeg บนมือถือ</h1>
+      <p class="lead-desc">
+        คู่มือปฏิบัติการจริงสำหรับเปลี่ยนภาพนิ่งกับไฟล์เสียงให้เป็นวิดีโอ และยิงสตรีมสด 24 ชั่วโมงบนมือถือ Android ด้วยต้นทุนต่ำ (ไม่ต้องเช่าเซิร์ฟเวอร์รายเดือน)
+      </p>
+      <div class="tip-strip">
+        💡 <strong>กฎเหล็กของหมอเฉพาะทางมือถือ:</strong> อย่าให้มือถือแปลงไฟล์วิดีโอหนักๆ สดๆ เด็ดขาด ให้ใช้คำสั่ง <strong>-c copy</strong> (คัดลอกท่อข้อมูลตรงไม่บีบอัดใหม่) และเปิด <strong>Wake Lock</strong> เสมอ เครื่องจะไม่ร้อนและไม่ตัดกลางคัน
+      </div>
+    </section>
+
+    <!-- โซน 2: โต๊ะทดลองประกอบคำสั่ง -->
+    <section class="glass-panel">
+      <h2 class="section-title">🎮 โต๊ะทดลองประกอบคำสั่ง (กดเลือกภารกิจ)</h2>
+
+      <div class="mission-tabs">
+        <button class="tab-btn active" onclick="selectMission(0, this)">
+          <span class="tab-level mono">ภารกิจ 01 • พื้นฐาน</span>
+          <span class="tab-name">รวมภาพปก + เพลง (16:9)</span>
+        </button>
+        <button class="tab-btn" onclick="selectMission(1, this)">
+          <span class="tab-level mono">ภารกิจ 02 • กันลิขสิทธิ์</span>
+          <span class="tab-name">ด่าน PROBATION_7D (144p)</span>
+        </button>
+        <button class="tab-btn" onclick="selectMission(2, this)">
+          <span class="tab-level mono">ภารกิจ 03 • 24/7 LIVE</span>
+          <span class="tab-name">สตรีมสดต่อเนื่องไม่กินแรม</span>
+        </button>
+      </div>
+
+      <div class="code-box">
+        <div class="code-header">
+          <span id="mission-file" class="mono">คำสั่งรันใน Termux CLI</span>
+          <button class="copy-btn" onclick="copyCommand()">📋 คัดลอกคำสั่ง</button>
+        </div>
+        <pre id="command-display" class="mono"></pre>
+      </div>
+
+      <div id="breakdown-container" class="breakdown-list"></div>
+    </section>
+
+    <!-- โซน 3: ด่านตรวจรับรองผล 127.0.0.1:2026 -->
+    <section class="glass-panel">
+      <h2 class="section-title">🛡️ ด่านตรวจรับรองผลในเครื่อง (127.0.0.1:2026)</h2>
+      <div class="gate-box">
+        <div class="gate-status">
+          <span id="gate-pill" class="status-pill status-locked">⏳ กำลังตรวจหาเครื่องยนต์ในมือถือ...</span>
+          <button class="test-btn" onclick="checkLocalEngine()">🔄 กดตรวจเช็กเครื่องอีกครั้ง</button>
+        </div>
+        <div id="gate-message" class="gate-msg"></div>
+      </div>
+    </section>
+
+    <footer class="mono">
+      tnh'ai • ThitNueaHub Sovereign Mobile Lab • MIT License 2026 • #tnhAi #thitnueahub
+    </footer>
+  </div>
+
+  <script>
+    const missions = [
+      {
+        title: "รวมภาพปก + ไฟล์เสียงเป็นคลิปเต็ม 1080p",
+        cmd: `ffmpeg -loop 1 -framerate 2 -i cover.png -i song.mp3 -c:v libx264 -tune stillimage -pix_fmt yuv420p -c:a aac -b:a 192k -shortest output_16x9.mp4`,
+        parts: [
+          { flag: "-loop 1 -framerate 2", desc: "วนซ้ำภาพนิ่งแค่ 2 เฟรมต่อวินาที ประหยัดแบตและแรมมือถือสุดๆ แต่ภาพยังคมชัดเหมือนเดิม" },
+          { flag: "-tune stillimage", desc: "บอกตัวเข้ารหัสว่านี่คือภาพนิ่ง ช่วยลดขนาดไฟล์วิดีโอให้เล็กลงอัตโนมัติ" },
+          { flag: "-shortest", desc: "ตัดจบคลิปทันทีเมื่อเสียงเพลงเล่นจบ ไม่ปล่อยให้วิดีโอยาวค้างเกินเพลง" }
+        ]
+      },
+      {
+        title: "ทดสอบลิขสิทธิ์ 144p จอดำก่อนปล่อยจริง (PROBATION_7D)",
+        cmd: `ffmpeg -f lavfi -i color=c=black:s=256x144:r=1 -i song.mp3 -c:v libx264 -preset ultrafast -c:a copy -shortest probe_144p.mp4`,
+        parts: [
+          { flag: "color=c=black:s=256x144", desc: "สร้างวิดีโอจอดำขนาดจิ๋ว 144p ใช้เวลาเรนเดอร์บนมือถือแค่ไม่กี่วินาที" },
+          { flag: "-c:a copy", desc: "ดึงเสียงต้นฉบับใส่เข้าไปตรงๆ ไม่แปลงใหม่ เพื่ออัปโหลดขึ้น YouTube แบบส่วนตัวเช็กติดเหลือง/ลิขสิทธิ์ก่อนทำ MV จริง" }
+        ]
+      },
+      {
+        title: "ยิงสตรีมสด 24 ชม. แบบไม่กิน CPU (ต่อผ่านไฟล์ playlist.txt)",
+        cmd: `termux-wake-lock && ffmpeg -re -stream_loop -1 -f concat -safe 0 -i playlist.txt -c copy -f flv "rtmp://a.rtmp.youtube.com/live2/YOUR_STREAM_KEY"`,
+        parts: [
+          { flag: "termux-wake-lock", desc: "ล็อกไม่ให้ระบบ Android ตัดการทำงานของ Termux เวลาปิดหน้าจอ" },
+          { flag: "-re -stream_loop -1", desc: "ส่งภาพตามความเร็วจริง (Real-time) และวนลูปเพลย์ลิสต์อัตโนมัติไม่มีสะดุด" },
+          { flag: "-c copy", desc: "หัวใจสำคัญ: ส่งข้อมูลวิดีโอที่เตรียมไว้แล้วขึ้น YouTube ทันทีโดยไม่ประมวลผลใหม่ (แนะนำให้ตั้งรีสตาร์ททุก 11.5 ชม. เพื่อเก็บบันทึกย้อนหลัง)" }
+        ]
+      }
+    ];
+
+    let currentCmd = missions[0].cmd;
+
+    function selectMission(index, btnEl) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btnEl.classList.add('active');
+
+      const m = missions[index];
+      currentCmd = m.cmd;
+      document.getElementById('mission-file').textContent = m.title;
+      document.getElementById('command-display').textContent = m.cmd;
+
+      const listEl = document.getElementById('breakdown-container');
+      listEl.innerHTML = m.parts.map(p => `
+        <div class="breakdown-item">
+          <span class="flag-tag mono">${p.flag}</span>
+          <span>${p.desc}</span>
+        </div>
+      `).join('');
+    }
+
+    function copyCommand() {
+      navigator.clipboard.writeText(currentCmd).then(() => {
+        const btn = document.querySelector('.copy-btn');
+        const old = btn.textContent;
+        btn.textContent = '✅ คัดลอกแล้ว!';
+        setTimeout(() => btn.textContent = old, 1800);
+      });
+    }
+
+    async function checkLocalEngine() {
+      const pill = document.getElementById('gate-pill');
+      const msg = document.getElementById('gate-message');
+      try {
+        const res = await fetch('http://127.0.0.1:2026/health');
+        const data = await res.json();
+        pill.className = 'status-pill status-online';
+        pill.textContent = `✅ ปลดล็อกสำเร็จ: เชื่อมต่อ ${data.node} แล้ว`;
+        msg.innerHTML = `เครื่องยนต์ Pure Go ในมือถือของคุณทำงานอยู่จริง (RAM: <strong>${data.go_alloc_mb}</strong> | พื้นที่ว่าง: <strong>${data.free_disk_gb}</strong>) คุณสามารถนำคำสั่งด้านบนไปรันใน Termux ได้ทันที!`;
+      } catch (e) {
+        pill.className = 'status-pill status-locked';
+        pill.textContent = '🎯 ภารกิจ: ยังไม่พบ Pure Go (:2026) ในเครื่องนี้';
+        msg.innerHTML = `
+          ปุ่มนี้เชื่อมต่อกับเครื่องยนต์ในมือถือของคุณโดยตรง <strong>คุณต้องนำต้นแบบนี้ไปติดตั้งและรันใน Termux ของคุณเอง ถึงจะเป็นของคุณจริง!</strong>
+          <div class="quickstart-mini mono">
+            # คำสั่งเริ่มต้น 3 บรรทัดบน Termux:<br>
+            pkg update -y && pkg install golang ffmpeg git -y<br>
+            git clone https://github.com/ARTHITSIANGWAN/TNH-AI-MASTER-TEMPLATE.git<br>
+            cd TNH-AI-MASTER-TEMPLATE && go run ./cmd/orchestra/main.go
+          </div>
+        `;
+      }
+    }
+
+    selectMission(0, document.querySelector('.tab-btn'));
+    checkLocalEngine();
+  </script>
+</body>
+</html>
