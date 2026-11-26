@@ -44,3 +44,4 @@ ehthumbs.db
 .project
 .classpath
 .settings/
+*.bak
